@@ -74,12 +74,20 @@
   line-height: 1.3;
 }
 
-.ac-markdown h1 { font-size: var(--ac-font-size-xxl); }
-.ac-markdown h2 { font-size: var(--ac-font-size-xl); }
-.ac-markdown h3 { font-size: var(--ac-font-size-lg); }
+.ac-markdown h1 {
+  font-size: var(--ac-font-size-xxl);
+}
+.ac-markdown h2 {
+  font-size: var(--ac-font-size-xl);
+}
+.ac-markdown h3 {
+  font-size: var(--ac-font-size-lg);
+}
 .ac-markdown h4,
 .ac-markdown h5,
-.ac-markdown h6 { font-size: var(--ac-font-size-md); }
+.ac-markdown h6 {
+  font-size: var(--ac-font-size-md);
+}
 
 .ac-markdown h1:first-child,
 .ac-markdown h2:first-child,

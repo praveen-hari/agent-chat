@@ -39,6 +39,9 @@ export interface ChatCallbacks {
   /** User approves/denies a tool confirmation */
   onToolAction?: (toolCallId: string, actionId: string, toolId: string) => void;
 
+  /** User responds to a confirmation dialog */
+  onConfirmationAction?: (actionId: string) => void;
+
   /** User responds to an elicitation */
   onElicitationAction?: (partId: string, actionId: string, data?: unknown) => void;
 

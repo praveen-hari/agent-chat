@@ -57,7 +57,9 @@
   padding: var(--ac-space-xs);
   border-radius: var(--ac-radius-sm);
   color: var(--ac-fg-icon);
-  transition: background var(--ac-transition-fast), color var(--ac-transition-fast);
+  transition:
+    background var(--ac-transition-fast),
+    color var(--ac-transition-fast);
   cursor: pointer;
   min-width: var(--ac-control-height);
   min-height: var(--ac-control-height);
@@ -165,10 +167,22 @@
   color: var(--ac-fg-secondary);
 }
 
-.ac-badge--success { background: var(--ac-success); color: #fff; }
-.ac-badge--warning { background: var(--ac-warning); color: #000; }
-.ac-badge--error   { background: var(--ac-error);   color: #fff; }
-.ac-badge--info    { background: var(--ac-info);     color: #fff; }
+.ac-badge--success {
+  background: var(--ac-success);
+  color: #fff;
+}
+.ac-badge--warning {
+  background: var(--ac-warning);
+  color: #000;
+}
+.ac-badge--error {
+  background: var(--ac-error);
+  color: #fff;
+}
+.ac-badge--info {
+  background: var(--ac-info);
+  color: #fff;
+}
 
 /* ─── Status Icon ─── */
 .ac-status-icon {
@@ -181,13 +195,27 @@
   font-size: var(--ac-icon-size);
 }
 
-.ac-status-icon--running { color: var(--ac-fg-icon); }
-.ac-status-icon--complete { color: var(--ac-success); }
-.ac-status-icon--failed { color: var(--ac-error); }
-.ac-status-icon--cancelled { color: var(--ac-fg-tertiary); }
-.ac-status-icon--pending { color: var(--ac-fg-tertiary); }
-.ac-status-icon--warning { color: var(--ac-warning); }
-.ac-status-icon--info { color: var(--ac-info); }
+.ac-status-icon--running {
+  color: var(--ac-fg-icon);
+}
+.ac-status-icon--complete {
+  color: var(--ac-success);
+}
+.ac-status-icon--failed {
+  color: var(--ac-error);
+}
+.ac-status-icon--cancelled {
+  color: var(--ac-fg-tertiary);
+}
+.ac-status-icon--pending {
+  color: var(--ac-fg-tertiary);
+}
+.ac-status-icon--warning {
+  color: var(--ac-warning);
+}
+.ac-status-icon--info {
+  color: var(--ac-info);
+}
 
 /* ─── Risk Badge ─── */
 .ac-risk-badge {
@@ -199,10 +227,18 @@
   border-radius: var(--ac-radius-sm);
 }
 
-.ac-risk-badge--low      { color: var(--ac-risk-low); }
-.ac-risk-badge--medium   { color: var(--ac-risk-medium); }
-.ac-risk-badge--high     { color: var(--ac-risk-high); }
-.ac-risk-badge--assessing { color: var(--ac-fg-tertiary); }
+.ac-risk-badge--low {
+  color: var(--ac-risk-low);
+}
+.ac-risk-badge--medium {
+  color: var(--ac-risk-medium);
+}
+.ac-risk-badge--high {
+  color: var(--ac-risk-high);
+}
+.ac-risk-badge--assessing {
+  color: var(--ac-fg-tertiary);
+}
 
 /* ─── Collapsible Section ─── */
 .ac-collapsible__header {

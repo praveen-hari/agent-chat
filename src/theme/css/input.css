@@ -15,7 +15,9 @@
   border-radius: var(--ac-radius-lg);
   background: var(--ac-bg-input);
   overflow: hidden;
-  transition: border-color var(--ac-transition-fast), background var(--ac-transition-fast);
+  transition:
+    border-color var(--ac-transition-fast),
+    background var(--ac-transition-fast);
 }
 
 .ac-input-container:focus-within {

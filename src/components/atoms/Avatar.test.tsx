@@ -13,7 +13,9 @@ describe('Avatar', () => {
   });
 
   test('renders image with alt text', () => {
-    const { container } = render(<Avatar icon={{ src: 'https://example.com/avatar.png' }} name="User" />);
+    const { container } = render(
+      <Avatar icon={{ src: 'https://example.com/avatar.png' }} name="User" />,
+    );
     const imgEl = container.querySelector('img.ac-avatar__img');
     expect(imgEl).toBeInTheDocument();
     expect(imgEl).toHaveAttribute('src', 'https://example.com/avatar.png');

@@ -148,3 +148,77 @@ export { RiskBadge } from './components/atoms/RiskBadge';
 export type { RiskBadgeProps } from './components/atoms/RiskBadge';
 export { StatusIcon } from './components/atoms/StatusIcon';
 export type { StatusIconProps, StatusIconStatus } from './components/atoms/StatusIcon';
+
+// ═══════════════════════════════════════════
+// CONTENT PART COMPONENTS
+// ═══════════════════════════════════════════
+export { ContentPartRenderer } from './components/content-parts/ContentPartRenderer';
+export type { ContentPartRendererProps } from './components/content-parts/ContentPartRenderer';
+export { MarkdownContent } from './components/content-parts/MarkdownContent';
+export type { MarkdownContentProps } from './components/content-parts/MarkdownContent';
+export { CodeBlock } from './components/content-parts/CodeBlock';
+export type { CodeBlockProps } from './components/content-parts/CodeBlock';
+export { ThinkingBlock } from './components/content-parts/ThinkingBlock';
+export type { ThinkingBlockProps } from './components/content-parts/ThinkingBlock';
+export { SubAgentDisplay } from './components/content-parts/SubAgentDisplay';
+export type { SubAgentDisplayProps } from './components/content-parts/SubAgentDisplay';
+export { ProgressStep } from './components/content-parts/ProgressStep';
+export type { ProgressStepProps } from './components/content-parts/ProgressStep';
+export { WorkingIndicator } from './components/content-parts/WorkingIndicator';
+export type { WorkingIndicatorProps } from './components/content-parts/WorkingIndicator';
+export { EditPill } from './components/content-parts/EditPill';
+export type { EditPillProps } from './components/content-parts/EditPill';
+export { FileChangesSummary } from './components/content-parts/FileChangesSummary';
+export type { FileChangesSummaryProps } from './components/content-parts/FileChangesSummary';
+export { TurnPills } from './components/content-parts/TurnPills';
+export type { TurnPillsProps } from './components/content-parts/TurnPills';
+export { InlineDiff } from './components/content-parts/InlineDiff';
+export type { InlineDiffProps } from './components/content-parts/InlineDiff';
+export { WorkspaceEdit } from './components/content-parts/WorkspaceEdit';
+export type { WorkspaceEditProps } from './components/content-parts/WorkspaceEdit';
+export { TodoList } from './components/content-parts/TodoList';
+export type { TodoListProps } from './components/content-parts/TodoList';
+export { PlanReviewCard } from './components/content-parts/PlanReviewCard';
+export type { PlanReviewCardProps } from './components/content-parts/PlanReviewCard';
+export { FileTree } from './components/content-parts/FileTree';
+export type { FileTreeProps } from './components/content-parts/FileTree';
+export { ReferencesList } from './components/content-parts/ReferencesList';
+export type { ReferencesListProps } from './components/content-parts/ReferencesList';
+export { InlineReference } from './components/content-parts/InlineReference';
+export type { InlineReferenceProps } from './components/content-parts/InlineReference';
+export { ImageContent } from './components/content-parts/ImageContent';
+export type { ImageContentProps } from './components/content-parts/ImageContent';
+
+// ═══════════════════════════════════════════
+// NOTIFICATION COMPONENTS
+// ═══════════════════════════════════════════
+export { ErrorMessage } from './components/notifications/ErrorMessage';
+export type { ErrorMessageProps } from './components/notifications/ErrorMessage';
+export { SystemNotification } from './components/notifications/SystemNotification';
+export type { SystemNotificationProps } from './components/notifications/SystemNotification';
+export { WorkspaceTransition } from './components/notifications/WorkspaceTransition';
+export type { WorkspaceTransitionProps } from './components/notifications/WorkspaceTransition';
+export { HookResult } from './components/notifications/HookResult';
+export type { HookResultProps } from './components/notifications/HookResult';
+export { TipContent } from './components/notifications/TipContent';
+export type { TipContentProps } from './components/notifications/TipContent';
+export { QuotaExceeded } from './components/notifications/QuotaExceeded';
+export type { QuotaExceededProps } from './components/notifications/QuotaExceeded';
+export { RateLimited } from './components/notifications/RateLimited';
+export type { RateLimitedProps } from './components/notifications/RateLimited';
+
+// ═══════════════════════════════════════════
+// INTERACTIVE COMPONENTS
+// ═══════════════════════════════════════════
+export { ConfirmationDialog } from './components/interactive/ConfirmationDialog';
+export type { ConfirmationDialogProps } from './components/interactive/ConfirmationDialog';
+export { ElicitationDialog } from './components/interactive/ElicitationDialog';
+export type { ElicitationDialogProps } from './components/interactive/ElicitationDialog';
+export { CommandButton } from './components/interactive/CommandButton';
+export type { CommandButtonProps } from './components/interactive/CommandButton';
+export { FollowupButton } from './components/interactive/FollowupButton';
+export type { FollowupButtonProps } from './components/interactive/FollowupButton';
+export { SuggestNext } from './components/interactive/SuggestNext';
+export type { SuggestNextProps } from './components/interactive/SuggestNext';
+export { PullRequestCard } from './components/interactive/PullRequestCard';
+export type { PullRequestCardProps } from './components/interactive/PullRequestCard';
