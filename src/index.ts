@@ -286,3 +286,26 @@ export { ChatWelcome } from './components/ChatWelcome';
 export type { ChatWelcomeProps } from './components/ChatWelcome';
 export { TodoListDock } from './components/TodoListDock';
 export type { TodoListDockProps } from './components/TodoListDock';
+
+// ═══════════════════════════════════════════
+// HOOKS
+// ═══════════════════════════════════════════
+export { useStreaming } from './hooks/useStreaming';
+export { useAutoScroll } from './hooks/useAutoScroll';
+export type { UseAutoScrollOptions, UseAutoScrollReturn } from './hooks/useAutoScroll';
+export { useRelativeTime, formatRelativeTime } from './hooks/useRelativeTime';
+export { useCopyToClipboard } from './hooks/useCopyToClipboard';
+export { useCollapsible } from './hooks/useCollapsible';
+export type { UseCollapsibleOptions, UseCollapsibleReturn } from './hooks/useCollapsible';
+export { useVirtualList } from './hooks/useVirtualList';
+
+// ═══════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════
+export { cn } from './utils/cn';
+export { countWords, getNWords, getProgressiveRenderRate } from './utils/wordCount';
+export {
+  resolveToolIcon as resolveToolIconUtil,
+  resolveFileIcon,
+  resolveChangeStatusIcon,
+} from './utils/iconMap';
