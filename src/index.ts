@@ -276,3 +276,13 @@ export { InputNotice } from './components/input/InputNotice';
 export type { InputNoticeProps } from './components/input/InputNotice';
 export { ChatInputArea } from './components/input/ChatInputArea';
 export type { ChatInputAreaProps } from './components/input/ChatInputArea';
+
+// ═══════════════════════════════════════════
+// MAIN WIDGET COMPONENTS
+// ═══════════════════════════════════════════
+export { AgentChat } from './components/AgentChat';
+export type { AgentChatProps } from './components/AgentChat';
+export { ChatWelcome } from './components/ChatWelcome';
+export type { ChatWelcomeProps } from './components/ChatWelcome';
+export { TodoListDock } from './components/TodoListDock';
+export type { TodoListDockProps } from './components/TodoListDock';
