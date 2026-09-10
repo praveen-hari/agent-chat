@@ -262,3 +262,17 @@ export { AttachmentsRow } from './components/messages/AttachmentsRow';
 export type { AttachmentsRowProps } from './components/messages/AttachmentsRow';
 export { MessageList } from './components/messages/MessageList';
 export type { MessageListProps } from './components/messages/MessageList';
+
+// ═══════════════════════════════════════════
+// INPUT AREA COMPONENTS
+// ═══════════════════════════════════════════
+export { ChatTextarea } from './components/input/ChatTextarea';
+export type { ChatTextareaProps } from './components/input/ChatTextarea';
+export { AttachmentBar } from './components/input/AttachmentBar';
+export type { AttachmentBarProps } from './components/input/AttachmentBar';
+export { InputToolbar } from './components/input/InputToolbar';
+export type { InputToolbarProps } from './components/input/InputToolbar';
+export { InputNotice } from './components/input/InputNotice';
+export type { InputNoticeProps } from './components/input/InputNotice';
+export { ChatInputArea } from './components/input/ChatInputArea';
+export type { ChatInputAreaProps } from './components/input/ChatInputArea';
