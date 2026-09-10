@@ -66,6 +66,45 @@
   animation-delay: 0.4s;
 }
 
+/* Stagger additional dots beyond 3 */
+.ac-dot:nth-child(4) {
+  animation-delay: 0.6s;
+}
+
+.ac-dot:nth-child(5) {
+  animation-delay: 0.8s;
+}
+
+.ac-animated-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* ─── Shimmer text static portion (partial mode) ─── */
+.ac-shimmer-text-wrapper {
+  display: inline;
+}
+
+.ac-shimmer-text-static {
+  color: var(--ac-fg-primary);
+}
+
+/* ─── Pixel spinner ─── */
+.ac-pixel-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ac-pixel-spinner__square {
+  display: block;
+  width: 60%;
+  height: 60%;
+  background: var(--ac-fg-icon);
+  animation: ac-spin 0.9s steps(4) infinite;
+}
+
 /* ─── Input border pulse (streaming state) ─── */
 @keyframes ac-input-border-pulse {
   0%,

@@ -120,3 +120,37 @@ export type { ChatProviderProps } from './provider/ChatProvider';
 export { useChatContext, useChatSelector } from './provider/useChatContext';
 export { useChatActions } from './provider/useChatActions';
 export type { ChatContextValue } from './provider/ChatContext';
+
+// ═══════════════════════════════════════════
+// HOOKS
+// ═══════════════════════════════════════════
+export { useRelativeTime, formatAbsoluteTime } from './hooks/useRelativeTime';
+export { useCollapsible } from './hooks/useCollapsible';
+
+// ═══════════════════════════════════════════
+// ATOM COMPONENTS
+// ═══════════════════════════════════════════
+export { Avatar } from './components/atoms/Avatar';
+export type { AvatarProps } from './components/atoms/Avatar';
+export { Username } from './components/atoms/Username';
+export type { UsernameProps } from './components/atoms/Username';
+export { Timestamp } from './components/atoms/Timestamp';
+export type { TimestampProps } from './components/atoms/Timestamp';
+export { ShimmerText } from './components/atoms/ShimmerText';
+export type { ShimmerTextProps } from './components/atoms/ShimmerText';
+export { AnimatedDots } from './components/atoms/AnimatedDots';
+export type { AnimatedDotsProps } from './components/atoms/AnimatedDots';
+export { PixelSpinner } from './components/atoms/PixelSpinner';
+export type { PixelSpinnerProps } from './components/atoms/PixelSpinner';
+export { IconButton } from './components/atoms/IconButton';
+export type { IconButtonProps } from './components/atoms/IconButton';
+export { Chip } from './components/atoms/Chip';
+export type { ChipProps } from './components/atoms/Chip';
+export { Badge } from './components/atoms/Badge';
+export type { BadgeProps } from './components/atoms/Badge';
+export { CollapsibleSection } from './components/atoms/CollapsibleSection';
+export type { CollapsibleSectionProps } from './components/atoms/CollapsibleSection';
+export { RiskBadge } from './components/atoms/RiskBadge';
+export type { RiskBadgeProps } from './components/atoms/RiskBadge';
+export { StatusIcon } from './components/atoms/StatusIcon';
+export type { StatusIconProps, StatusIconStatus } from './components/atoms/StatusIcon';
