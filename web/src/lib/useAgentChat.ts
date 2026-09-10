@@ -34,6 +34,7 @@ export function useAgentChat(options: UseAgentChatOptions = {}) {
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const historyRef = useRef<Array<{ role: string; content: string }>>([]);
+  const idCounterRef = useRef(0);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -41,16 +42,17 @@ export function useAgentChat(options: UseAgentChatOptions = {}) {
 
       setError(null);
 
-      // Add user message
+      // Unique IDs using counter + timestamp
+      const seq = ++idCounterRef.current;
       const userMsg: ChatRequest = {
         role: 'user',
-        id: `user-${Date.now()}`,
+        id: `user-${seq}-${Date.now()}`,
         timestamp: Date.now(),
         message: text,
         content: [{ kind: 'markdown', content: text }],
       };
 
-      const responseId = `assistant-${Date.now()}`;
+      const responseId = `assistant-${seq}-${Date.now()}`;
       let currentText = '';
       let currentAgent = 'AI Assistant';
       const toolCalls: AgentToolCall[] = [];

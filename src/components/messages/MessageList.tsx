@@ -50,10 +50,15 @@ export const MessageList = memo(function MessageList({ className }: MessageListP
     >
       {messages.map((msg: ChatMessage, i: number) => {
         const isLast = i === messages.length - 1;
-        if (msg.role === 'user') {
-          return <RequestRow key={msg.id} request={msg} isLast={isLast} />;
+        // Ensure content is always an array
+        const safeMsg = {
+          ...msg,
+          content: Array.isArray(msg.content) ? msg.content : [],
+        };
+        if (safeMsg.role === 'user') {
+          return <RequestRow key={safeMsg.id} request={safeMsg} isLast={isLast} />;
         }
-        return <ResponseRow key={msg.id} response={msg} isLast={isLast} />;
+        return <ResponseRow key={safeMsg.id} response={safeMsg} isLast={isLast} />;
       })}
     </div>
   );

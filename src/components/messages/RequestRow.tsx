@@ -86,7 +86,7 @@ export const RequestRow = memo(function RequestRow({
 
       {/* Message content */}
       <div className="ac-message-row__content">
-        {request.content.map((part, i) => (
+        {Array.isArray(request.content) && request.content.map((part, i) => (
           <ContentPartRenderer
             key={`${part.kind}-${i}`}
             part={part}
