@@ -1,0 +1,109 @@
+{
+  "name": "@agent-chat/react",
+  "version": "0.1.0",
+  "description": "Reusable React component library for AI agent chat interfaces — inspired by VS Code's chat architecture",
+  "type": "module",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.es.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.es.js"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs.js"
+      }
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "*.css"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\"",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "test:watch": "vitest --watch",
+    "test:a11y": "vitest run --grep 'Accessibility'",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "size": "size-limit",
+    "analyze": "npx vite-bundle-visualizer",
+    "clean": "rm -rf dist coverage storybook-static",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "dependencies": {
+    "react-markdown": "^9.0.3",
+    "remark-gfm": "^4.0.1",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
+    "shiki": "^3.2.1",
+    "react-virtuoso": "^4.12.3"
+  },
+  "devDependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "@vitejs/plugin-react": "^4.5.2",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.2.1",
+    "@vitest/coverage-v8": "^3.2.1",
+    "jsdom": "^26.1.0",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/user-event": "^14.6.1",
+    "jest-axe": "^9.0.0",
+    "@playwright/test": "^1.52.0",
+    "eslint": "^9.27.0",
+    "@eslint/js": "^9.27.0",
+    "typescript-eslint": "^8.32.1",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "prettier": "^3.5.3",
+    "@size-limit/preset-small-lib": "^11.2.0",
+    "size-limit": "^11.2.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "chat",
+    "ai",
+    "agent",
+    "component-library",
+    "copilot",
+    "llm",
+    "coding-agent",
+    "vscode",
+    "streaming"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nickytonline/agent-chat.git"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

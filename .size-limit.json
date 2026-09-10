@@ -1,0 +1,14 @@
+[
+  {
+    "name": "Full library (ESM)",
+    "path": "dist/index.es.js",
+    "limit": "120 KB",
+    "gzip": true
+  },
+  {
+    "name": "CSS bundle",
+    "path": "dist/styles.css",
+    "limit": "15 KB",
+    "gzip": true
+  }
+]
