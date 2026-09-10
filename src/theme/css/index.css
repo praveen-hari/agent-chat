@@ -1,0 +1,15 @@
+/**
+ * Main CSS entry point for @agent-chat/react.
+ * Import this single file to get all styles:
+ *
+ *   import '@agent-chat/react/styles.css';
+ */
+
+@import './reset.css';
+@import './tokens.css';
+@import './base.css';
+@import './animations.css';
+@import './atoms.css';
+@import './content-parts.css';
+@import './messages.css';
+@import './input.css';

@@ -1,0 +1,147 @@
+/**
+ * Styles for message layout components.
+ * Message rows, headers, footers, followups.
+ */
+
+/* ─── Message Row (shared) ─── */
+.ac-message-row {
+  padding: var(--ac-space-md) 0;
+  position: relative;
+}
+
+/* ─── Request Row ─── */
+.ac-message-row--request {
+  border: var(--ac-stroke-width) solid var(--ac-border-request);
+  background: var(--ac-bg-request);
+  border-radius: var(--ac-radius-lg);
+  padding: var(--ac-space-lg) var(--ac-space-xl);
+  margin: var(--ac-space-md) 0;
+}
+
+/* ─── Response Row ─── */
+.ac-message-row--response {
+  padding: var(--ac-space-md) 0;
+}
+
+.ac-message-row--streaming {
+  /* Visual indicator for active streaming */
+}
+
+/* ─── Message Header ─── */
+.ac-message-header {
+  display: flex;
+  align-items: center;
+  gap: var(--ac-space-md);
+  padding: var(--ac-space-xs) 0 var(--ac-space-md);
+}
+
+.ac-message-header__user {
+  display: flex;
+  align-items: center;
+  gap: var(--ac-space-md);
+}
+
+.ac-message-header__detail {
+  font-size: var(--ac-font-size-xs);
+  color: var(--ac-fg-tertiary);
+}
+
+.ac-message-header__toolbar {
+  margin-left: auto;
+  display: flex;
+  gap: var(--ac-space-xxs);
+  opacity: 0;
+  transition: opacity var(--ac-transition-fast);
+}
+
+.ac-message-row:hover .ac-message-header__toolbar,
+.ac-message-row:focus-within .ac-message-header__toolbar {
+  opacity: 1;
+}
+
+/* ─── Message Content ─── */
+.ac-message-row__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ac-space-xs);
+}
+
+/* ─── Message Timestamp ─── */
+.ac-message-row__timestamp {
+  padding-top: var(--ac-space-xs);
+}
+
+/* ─── Response Footer ─── */
+.ac-response-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--ac-space-md) 0;
+  border-top: var(--ac-stroke-width) solid var(--ac-border);
+  margin-top: var(--ac-space-md);
+}
+
+.ac-response-footer__toolbar {
+  display: flex;
+  gap: var(--ac-space-xxs);
+}
+
+.ac-response-footer__details {
+  display: flex;
+  align-items: center;
+  gap: var(--ac-space-md);
+  color: var(--ac-fg-tertiary);
+  font-size: var(--ac-font-size-xs);
+}
+
+/* Dot separator between detail items */
+.ac-response-footer__details > span + span::before {
+  content: '·';
+  margin-right: var(--ac-space-md);
+}
+
+/* ─── Followup Suggestions ─── */
+.ac-followups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ac-space-md);
+  padding: var(--ac-space-md) 0;
+}
+
+.ac-followup-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ac-space-xs);
+  padding: var(--ac-space-md) var(--ac-space-xl);
+  background: var(--ac-bg-followup);
+  color: var(--ac-fg-followup);
+  border: var(--ac-stroke-width) solid var(--ac-border);
+  border-radius: var(--ac-radius-md);
+  cursor: pointer;
+  font-size: var(--ac-font-size-sm);
+  transition: background var(--ac-transition-fast);
+  max-width: 100%;
+}
+
+.ac-followup-btn:hover {
+  background: var(--ac-bg-hover);
+}
+
+.ac-followup-btn__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Attachments Row ─── */
+.ac-attachments-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ac-space-xs);
+  padding: var(--ac-space-xs) 0;
+}
+
+/* ─── Request Origin Pill ─── */
+.ac-request-origin {
+  margin-bottom: var(--ac-space-xs);
+}

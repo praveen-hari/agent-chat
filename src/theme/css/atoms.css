@@ -1,0 +1,255 @@
+/**
+ * Styles for atomic (leaf) components.
+ * Avatar, Badge, Chip, IconButton, etc.
+ */
+
+/* ─── Avatar ─── */
+.ac-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--ac-avatar-size);
+  height: var(--ac-avatar-size);
+  border-radius: var(--ac-radius-circle);
+  background: var(--ac-bg-avatar);
+  color: var(--ac-fg-avatar);
+  font-size: var(--ac-font-size-sm);
+  font-weight: var(--ac-font-weight-bold);
+  flex-shrink: 0;
+  overflow: hidden;
+  user-select: none;
+}
+
+.ac-avatar--outline {
+  border: var(--ac-stroke-width) solid var(--ac-border);
+}
+
+.ac-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ac-avatar__initials {
+  text-transform: uppercase;
+}
+
+/* ─── Username ─── */
+.ac-username {
+  font-weight: var(--ac-font-weight-bold);
+  font-size: var(--ac-font-size-md);
+  color: var(--ac-fg-primary);
+  line-height: 1.3;
+}
+
+/* ─── Timestamp ─── */
+.ac-timestamp {
+  font-size: var(--ac-font-size-xs);
+  color: var(--ac-fg-tertiary);
+}
+
+/* ─── Icon Button ─── */
+.ac-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ac-space-xs);
+  padding: var(--ac-space-xs);
+  border-radius: var(--ac-radius-sm);
+  color: var(--ac-fg-icon);
+  transition: background var(--ac-transition-fast), color var(--ac-transition-fast);
+  cursor: pointer;
+  min-width: var(--ac-control-height);
+  min-height: var(--ac-control-height);
+}
+
+.ac-icon-button:hover {
+  background: var(--ac-bg-hover);
+  color: var(--ac-fg-icon-hover);
+}
+
+.ac-icon-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.ac-icon-button--primary {
+  color: var(--ac-button-primary-fg);
+  background: var(--ac-button-primary-bg);
+}
+
+.ac-icon-button--primary:hover {
+  filter: brightness(1.1);
+}
+
+.ac-icon-button--danger:hover {
+  color: var(--ac-error);
+}
+
+.ac-icon-button--small {
+  padding: var(--ac-space-xxs);
+  min-width: 18px;
+  min-height: 18px;
+  font-size: var(--ac-font-size-xs);
+}
+
+.ac-icon-button__label {
+  font-size: var(--ac-font-size-xs);
+}
+
+/* ─── Chip / Pill ─── */
+.ac-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ac-space-xs);
+  padding: 2px var(--ac-space-md);
+  border-radius: var(--ac-radius-sm);
+  background: var(--ac-bg-status);
+  font-size: var(--ac-font-size-xs);
+  line-height: 1.4;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  user-select: none;
+}
+
+.ac-chip--clickable {
+  cursor: pointer;
+  transition: background var(--ac-transition-fast);
+}
+
+.ac-chip--clickable:hover {
+  background: var(--ac-bg-hover);
+}
+
+.ac-chip__icon {
+  flex-shrink: 0;
+  font-size: var(--ac-icon-size-sm);
+}
+
+.ac-chip__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ac-chip__remove {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  border-radius: var(--ac-radius-circle);
+  font-size: 10px;
+  cursor: pointer;
+  transition: background var(--ac-transition-fast);
+}
+
+.ac-chip__remove:hover {
+  background: var(--ac-bg-hover);
+}
+
+/* ─── Badge ─── */
+.ac-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 var(--ac-space-xs);
+  border-radius: 9px;
+  font-size: 10px;
+  font-weight: var(--ac-font-weight-bold);
+  line-height: 1;
+  background: var(--ac-bg-status);
+  color: var(--ac-fg-secondary);
+}
+
+.ac-badge--success { background: var(--ac-success); color: #fff; }
+.ac-badge--warning { background: var(--ac-warning); color: #000; }
+.ac-badge--error   { background: var(--ac-error);   color: #fff; }
+.ac-badge--info    { background: var(--ac-info);     color: #fff; }
+
+/* ─── Status Icon ─── */
+.ac-status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--ac-icon-size);
+  height: var(--ac-icon-size);
+  font-size: var(--ac-icon-size);
+}
+
+.ac-status-icon--running { color: var(--ac-fg-icon); }
+.ac-status-icon--complete { color: var(--ac-success); }
+.ac-status-icon--failed { color: var(--ac-error); }
+.ac-status-icon--cancelled { color: var(--ac-fg-tertiary); }
+.ac-status-icon--pending { color: var(--ac-fg-tertiary); }
+.ac-status-icon--warning { color: var(--ac-warning); }
+.ac-status-icon--info { color: var(--ac-info); }
+
+/* ─── Risk Badge ─── */
+.ac-risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ac-space-xs);
+  font-size: var(--ac-font-size-xs);
+  padding: var(--ac-space-xxs) var(--ac-space-md);
+  border-radius: var(--ac-radius-sm);
+}
+
+.ac-risk-badge--low      { color: var(--ac-risk-low); }
+.ac-risk-badge--medium   { color: var(--ac-risk-medium); }
+.ac-risk-badge--high     { color: var(--ac-risk-high); }
+.ac-risk-badge--assessing { color: var(--ac-fg-tertiary); }
+
+/* ─── Collapsible Section ─── */
+.ac-collapsible__header {
+  display: flex;
+  align-items: center;
+  gap: var(--ac-space-md);
+  padding: var(--ac-space-xs) 0;
+  cursor: pointer;
+  user-select: none;
+  border-radius: var(--ac-radius-sm);
+  transition: background var(--ac-transition-fast);
+}
+
+.ac-collapsible__header:hover {
+  background: var(--ac-bg-hover);
+}
+
+.ac-collapsible__title {
+  font-size: var(--ac-font-size-sm);
+  font-weight: var(--ac-font-weight-bold);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ac-collapsible__subtitle {
+  font-size: var(--ac-font-size-xs);
+  color: var(--ac-fg-tertiary);
+}
+
+.ac-collapsible__actions {
+  margin-left: auto;
+  display: flex;
+  gap: var(--ac-space-xxs);
+}
+
+/* ─── Keybinding Hint ─── */
+.ac-keybinding {
+  display: inline-block;
+  padding: 1px 4px;
+  font-size: var(--ac-font-size-xs);
+  font-family: var(--ac-font-family-mono);
+  background: var(--ac-bg-status);
+  border: var(--ac-stroke-width) solid var(--ac-border);
+  border-radius: 3px;
+  line-height: 1.3;
+  margin-left: var(--ac-space-xs);
+}

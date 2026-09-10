@@ -1,0 +1,134 @@
+/**
+ * CSS variable fallback declarations.
+ * These provide defaults if ThemeProvider is not used.
+ * ThemeProvider overrides these via inline styles.
+ */
+
+.ac-root {
+  /* ─── Backgrounds ─── */
+  --ac-bg-primary: #1e1e1e;
+  --ac-bg-list: #1e1e1e;
+  --ac-bg-request: rgba(30, 30, 30, 0.62);
+  --ac-bg-response: transparent;
+  --ac-bg-input: #2d2d2d;
+  --ac-bg-input-focus: #2d2d2d;
+  --ac-bg-code: #1e1e1e;
+  --ac-bg-hover: rgba(255, 255, 255, 0.05);
+  --ac-bg-status: rgba(204, 204, 204, 0.08);
+  --ac-bg-avatar: #1f1f1f;
+  --ac-bg-card: #252526;
+  --ac-bg-tooltip: #2d2d30;
+  --ac-bg-thinking: rgba(255, 255, 255, 0.03);
+  --ac-bg-terminal: #1a1a1a;
+
+  /* ─── Foregrounds ─── */
+  --ac-fg-primary: #cccccc;
+  --ac-fg-secondary: #999999;
+  --ac-fg-tertiary: #6b6b6b;
+  --ac-fg-link: #4daafc;
+  --ac-fg-avatar: #cccccc;
+  --ac-fg-icon: #c5c5c5;
+  --ac-fg-icon-hover: #ffffff;
+  --ac-fg-placeholder: #6b6b6b;
+
+  /* ─── Semantic ─── */
+  --ac-success: #3fb950;
+  --ac-error: #f85149;
+  --ac-warning: #d29922;
+  --ac-info: #4daafc;
+  --ac-diff-added: #3fb950;
+  --ac-diff-removed: #f85149;
+  --ac-diff-added-bg: rgba(63, 185, 80, 0.15);
+  --ac-diff-removed-bg: rgba(248, 81, 73, 0.15);
+
+  /* ─── Borders ─── */
+  --ac-border: rgba(255, 255, 255, 0.08);
+  --ac-border-request: rgba(255, 255, 255, 0.10);
+  --ac-border-input: rgba(255, 255, 255, 0.12);
+  --ac-border-input-focus: #0078d4;
+  --ac-border-input-active1: #0078d4;
+  --ac-border-input-active2: #4daafc;
+  --ac-border-code: rgba(255, 255, 255, 0.08);
+  --ac-border-card: rgba(255, 255, 255, 0.10);
+  --ac-border-separator: rgba(255, 255, 255, 0.08);
+  --ac-border-checkpoint: rgba(255, 255, 255, 0.10);
+
+  /* ─── Interactive ─── */
+  --ac-button-primary-bg: #0078d4;
+  --ac-button-primary-fg: #ffffff;
+  --ac-button-secondary-bg: rgba(255, 255, 255, 0.08);
+  --ac-button-secondary-fg: #cccccc;
+  --ac-button-hover-overlay: rgba(255, 255, 255, 0.05);
+  --ac-bg-followup: rgba(255, 255, 255, 0.06);
+  --ac-fg-followup: #cccccc;
+
+  /* ─── Special ─── */
+  --ac-shimmer: rgba(255, 255, 255, 0.12);
+  --ac-shimmer-base: transparent;
+  --ac-find-match-highlight: rgba(234, 92, 0, 0.33);
+  --ac-bg-slash-command: rgba(255, 255, 255, 0.12);
+  --ac-fg-slash-command: #cccccc;
+  --ac-fg-edited-file: #4daafc;
+  --ac-bg-selection: rgba(0, 120, 212, 0.3);
+
+  /* ─── Risk Levels ─── */
+  --ac-risk-low: #3fb950;
+  --ac-risk-medium: #d29922;
+  --ac-risk-high: #f85149;
+
+  /* ─── Todo Status ─── */
+  --ac-todo-completed: #3fb950;
+  --ac-todo-in-progress: #4daafc;
+  --ac-todo-not-started: #6b6b6b;
+
+  /* ─── Spacing ─── */
+  --ac-space-xxs: 2px;
+  --ac-space-xs: 4px;
+  --ac-space-sm: 6px;
+  --ac-space-md: 8px;
+  --ac-space-lg: 12px;
+  --ac-space-xl: 16px;
+  --ac-space-xxl: 24px;
+  --ac-space-3xl: 36px;
+
+  /* ─── Typography ─── */
+  --ac-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, sans-serif;
+  --ac-font-family-mono: 'SF Mono', Monaco, Menlo, Consolas, 'Ubuntu Mono', 'Liberation Mono',
+    'DejaVu Sans Mono', 'Courier New', monospace;
+  --ac-font-size-base: 13px;
+  --ac-font-size-xs: 0.846em;
+  --ac-font-size-sm: 0.923em;
+  --ac-font-size-md: 1em;
+  --ac-font-size-lg: 1.077em;
+  --ac-font-size-xl: 1.231em;
+  --ac-font-size-xxl: 1.538em;
+  --ac-line-height: 1.4;
+  --ac-line-height-code: 1.5;
+  --ac-font-weight-bold: 600;
+
+  /* ─── Radii ─── */
+  --ac-radius-sm: 4px;
+  --ac-radius-md: 6px;
+  --ac-radius-lg: 8px;
+  --ac-radius-circle: 50%;
+
+  /* ─── Sizes ─── */
+  --ac-avatar-size: 24px;
+  --ac-icon-size: 16px;
+  --ac-icon-size-sm: 14px;
+  --ac-stroke-width: 1px;
+  --ac-control-height: 22px;
+  --ac-todo-row-height: 22px;
+  --ac-file-row-height: 22px;
+
+  /* ─── Shadows ─── */
+  --ac-shadow-card: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --ac-shadow-tooltip: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --ac-shadow-dropdown: 0 4px 12px rgba(0, 0, 0, 0.5);
+
+  /* ─── Transitions ─── */
+  --ac-transition-fast: 100ms ease;
+  --ac-transition-medium: 200ms ease;
+  --ac-transition-slow: 300ms ease;
+}

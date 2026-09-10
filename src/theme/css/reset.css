@@ -1,0 +1,46 @@
+/**
+ * Minimal reset scoped to .ac-root.
+ * Does not affect elements outside the chat widget.
+ */
+
+.ac-root {
+  box-sizing: border-box;
+}
+
+.ac-root *,
+.ac-root *::before,
+.ac-root *::after {
+  box-sizing: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.ac-root button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.ac-root input,
+.ac-root textarea,
+.ac-root select {
+  font: inherit;
+  color: inherit;
+}
+
+.ac-root a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ac-root ul,
+.ac-root ol {
+  list-style: none;
+}
+
+.ac-root img {
+  max-width: 100%;
+  display: block;
+}
