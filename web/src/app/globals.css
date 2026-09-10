@@ -178,6 +178,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 0; /* critical: allows flex child to shrink below content size */
 }
 
 /* ─── Welcome Page ─── */

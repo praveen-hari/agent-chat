@@ -12,14 +12,20 @@
   background: var(--ac-bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* ─── Chat Container ─── */
 .ac-chat {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  flex: 1;
+  min-height: 0; /* allows flex child to shrink for scroll */
   max-width: var(--ac-max-width, 950px);
+  width: 100%;
   margin: 0 auto;
   position: relative;
 }

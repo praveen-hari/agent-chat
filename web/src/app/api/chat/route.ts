@@ -1,134 +1,209 @@
 /**
- * AI SDK API Route — handles chat messages with streaming, tools, and reasoning.
+ * OpenAI Agents SDK API Route
  *
- * Demonstrates:
- * - streamText with OpenAI provider
- * - Multi-step tool calling (weather, calculator, web search)
- * - Reasoning tokens forwarding
- * - Message metadata (timestamps, token usage)
+ * Runs an agent loop with tools and multi-agent handoffs.
+ * Streams SSE events to the client.
+ *
+ * Event types from @openai/agents:
+ * - raw_model_stream_event → text deltas from the LLM
+ * - run_item_stream_event → tool_called, tool_output, handoff_occurred, etc.
+ * - agent_updated_stream_event → agent changed (handoff)
  */
 
-import {
-  streamText,
-  convertToModelMessages,
-  createUIMessageStreamResponse,
-  toUIMessageStream,
-  tool,
-  isStepCount,
-} from 'ai';
-import type { UIMessage } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { Agent, run, tool } from '@openai/agents';
 import { z } from 'zod';
 
-// Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
+
+// ─── Tools ───
+
+const getWeather = tool({
+  name: 'get_weather',
+  description: 'Get the current weather for a city.',
+  parameters: z.object({
+    location: z.string().describe('City name, e.g. "Tokyo, Japan"'),
+  }),
+  async execute({ location }) {
+    const conditions = ['Sunny', 'Partly Cloudy', 'Overcast', 'Light Rain', 'Clear'];
+    const temp = Math.round(Math.random() * 30 + 5);
+    return JSON.stringify({
+      location,
+      temperature: `${temp}°C / ${Math.round(temp * 1.8 + 32)}°F`,
+      condition: conditions[Math.floor(Math.random() * conditions.length)],
+      humidity: `${Math.round(Math.random() * 60 + 30)}%`,
+    });
+  },
+});
+
+const calculator = tool({
+  name: 'calculator',
+  description: 'Evaluate a math expression.',
+  parameters: z.object({
+    expression: z.string().describe('Math expression, e.g. "2 + 2"'),
+  }),
+  async execute({ expression }) {
+    try {
+      const sanitized = expression.replace(/[^0-9+\-*/().%\s]/g, '');
+      const result = Function(`"use strict"; return (${sanitized})`)();
+      return JSON.stringify({ expression, result: String(result) });
+    } catch {
+      return JSON.stringify({ expression, error: 'Invalid expression' });
+    }
+  },
+});
+
+const searchWeb = tool({
+  name: 'search_web',
+  description: 'Search the web for information on a topic.',
+  parameters: z.object({
+    query: z.string().describe('The search query'),
+  }),
+  async execute({ query }) {
+    return JSON.stringify({
+      query,
+      results: [
+        { title: `Results for "${query}"`, snippet: `Latest findings about ${query}. This is a simulated result.` },
+        { title: `${query} - Reference`, snippet: `Comprehensive overview of ${query}.` },
+      ],
+    });
+  },
+});
+
+// ─── Specialist Agents ───
+
+const codeAgent = new Agent({
+  name: 'Code Assistant',
+  instructions: `You are an expert code assistant. Write clean, well-documented code.
+Always use markdown code blocks with language tags. Explain your code briefly.`,
+  model: 'gpt-4.1-mini',
+});
+
+const researchAgent = new Agent({
+  name: 'Research Assistant',
+  instructions: `You are a research assistant. Use search_web to find information.
+Summarize findings clearly with sources.`,
+  model: 'gpt-4.1-mini',
+  tools: [searchWeb],
+});
+
+// ─── Main Agent Factory ───
+
+function createMainAgent(model: string) {
+  return Agent.create({
+    name: 'AI Assistant',
+    instructions: `You are a helpful AI assistant with access to tools and specialist agents.
+- Use get_weather for weather questions
+- Use calculator for math
+- Hand off to Code Assistant for coding tasks
+- Hand off to Research Assistant for research/search tasks
+- Answer general questions directly
+Be concise. Use markdown formatting.`,
+    model,
+    tools: [getWeather, calculator],
+    handoffs: [codeAgent, researchAgent],
+  });
+}
+
+// ─── SSE Stream Handler ───
 
 export async function POST(req: Request) {
-  const { messages, model: modelId }: { messages: UIMessage[]; model?: string } =
-    await req.json();
+  const { message, history, model: modelId } = await req.json();
+  const agent = createMainAgent(modelId || 'gpt-4.1-mini');
 
-  const model = openai(modelId || 'gpt-4o-mini');
+  const input = [
+    ...(history || []),
+    { role: 'user' as const, content: message },
+  ];
 
-  const result = streamText({
-    model,
-    instructions: `You are a helpful AI coding assistant. You can:
-- Answer questions about code and programming
-- Use tools to get weather, perform calculations, and search the web
-- Break down complex tasks into steps
-- Provide code examples with syntax highlighting
+  const encoder = new TextEncoder();
 
-When asked about the weather, use the weather tool.
-When asked to calculate something, use the calculator tool.
-Be concise but thorough. Use markdown formatting for code blocks.`,
-    messages: await convertToModelMessages(messages),
-    stopWhen: isStepCount(5),
-    tools: {
-      weather: tool({
-        description: 'Get the current weather for a location',
-        inputSchema: z.object({
-          location: z.string().describe('City and optional country, e.g., "London, UK"'),
-        }),
-        execute: async ({ location }) => {
-          // Simulated weather data
-          const conditions = ['Sunny', 'Partly Cloudy', 'Overcast', 'Light Rain', 'Clear'];
-          const condition = conditions[Math.floor(Math.random() * conditions.length)];
-          const temperature = Math.round(Math.random() * 30 + 5);
-          const humidity = Math.round(Math.random() * 60 + 30);
+  const readable = new ReadableStream({
+    async start(controller) {
+      const send = (data: Record<string, unknown>) => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`));
+      };
 
-          return {
-            location,
-            temperature: `${temperature}°C / ${Math.round(temperature * 1.8 + 32)}°F`,
-            condition,
-            humidity: `${humidity}%`,
-            wind: `${Math.round(Math.random() * 30 + 5)} km/h`,
-          };
-        },
-      }),
+      try {
+        const stream = await run(agent, input, { stream: true });
 
-      calculator: tool({
-        description: 'Perform a mathematical calculation',
-        inputSchema: z.object({
-          expression: z.string().describe('The math expression to evaluate, e.g., "2 + 2"'),
-        }),
-        execute: async ({ expression }) => {
-          try {
-            // Safe math evaluation (no eval)
-            const sanitized = expression.replace(/[^0-9+\-*/().%\s]/g, '');
-            const result = Function(`"use strict"; return (${sanitized})`)();
-            return { expression, result: String(result) };
-          } catch {
-            return { expression, result: 'Error: Invalid expression' };
+        let currentAgentName = 'AI Assistant';
+        let fullText = '';
+
+        for await (const event of stream) {
+          // Agent handoff
+          if (event.type === 'agent_updated_stream_event') {
+            currentAgentName = event.agent?.name || 'AI Assistant';
+            send({ type: 'agent', name: currentAgentName });
           }
-        },
-      }),
 
-      searchWeb: tool({
-        description: 'Search the web for current information on a topic',
-        inputSchema: z.object({
-          query: z.string().describe('The search query'),
-        }),
-        execute: async ({ query }) => {
-          // Simulated search results
-          return {
-            query,
-            results: [
-              {
-                title: `Latest results for "${query}"`,
-                snippet: `Here are the most relevant findings about ${query}. This is a simulated search result for demonstration purposes.`,
-                url: `https://example.com/search?q=${encodeURIComponent(query)}`,
-              },
-              {
-                title: `${query} - Wikipedia`,
-                snippet: `${query} is a topic with many interesting aspects. For the full article, visit the link.`,
-                url: `https://en.wikipedia.org/wiki/${encodeURIComponent(query)}`,
-              },
-            ],
-          };
-        },
-      }),
+          // Text streaming from LLM
+          if (event.type === 'raw_model_stream_event') {
+            const data = event.data as Record<string, unknown>;
+            if (data.type === 'output_text_delta') {
+              const delta = (data.delta as string) || '';
+              fullText += delta;
+              send({ type: 'text_delta', delta });
+            }
+          }
+
+          // Tool & handoff events
+          if (event.type === 'run_item_stream_event') {
+            const item = event.item as unknown as Record<string, unknown>;
+
+            if (event.name === 'tool_called') {
+              send({
+                type: 'tool_start',
+                id: (item.callId as string) || `tc-${Date.now()}`,
+                name: (item.name as string) || 'unknown',
+                args: JSON.stringify(item.arguments || {}),
+              });
+            }
+
+            if (event.name === 'tool_output') {
+              send({
+                type: 'tool_end',
+                id: (item.callId as string) || '',
+                output: typeof item.output === 'string' ? item.output : JSON.stringify(item.output),
+              });
+            }
+
+            if (event.name === 'handoff_occurred') {
+              send({
+                type: 'handoff',
+                from: currentAgentName,
+                to: (item as Record<string, unknown>).targetAgent
+                  ? String((item as Record<string, unknown>).targetAgent)
+                  : 'specialist',
+              });
+            }
+          }
+        }
+
+        // Completion
+        await stream.completed;
+        send({
+          type: 'done',
+          text: stream.finalOutput || fullText,
+          agent: stream.lastAgent?.name || currentAgentName,
+        });
+
+        controller.close();
+      } catch (error) {
+        send({
+          type: 'error',
+          message: error instanceof Error ? error.message : 'Agent run failed',
+        });
+        controller.close();
+      }
     },
   });
 
-  return createUIMessageStreamResponse({
-    stream: toUIMessageStream({
-      stream: result.stream,
-      sendReasoning: true,
-      messageMetadata: ({ part }) => {
-        if (part.type === 'start') {
-          return { createdAt: Date.now() };
-        }
-        if (part.type === 'finish') {
-          return {
-            completedAt: Date.now(),
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            totalTokens: (part.totalUsage as any)?.totalTokens,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            promptTokens: (part.totalUsage as any)?.promptTokens,
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            completionTokens: (part.totalUsage as any)?.completionTokens,
-          };
-        }
-      },
-    }),
+  return new Response(readable, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    },
   });
 }
