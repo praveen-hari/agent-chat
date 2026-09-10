@@ -64,10 +64,10 @@ export const ResponseRow = memo(function ResponseRow({
         actions={
           <>
             {isStreaming && (
-              <IconButton icon="⏹" label="Cancel" onClick={handleCancel} size="small" />
+              <IconButton icon="debug-stop" label="Cancel" onClick={handleCancel} size="small" />
             )}
             {callbacks.onRetryResponse && !isStreaming && (
-              <IconButton icon="🔄" label="Retry" onClick={handleRetry} size="small" />
+              <IconButton icon="refresh" label="Retry" onClick={handleRetry} size="small" />
             )}
           </>
         }

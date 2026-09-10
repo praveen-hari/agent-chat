@@ -12,15 +12,15 @@ export function resolveToolIcon(toolId: string, explicitIcon?: string): string {
   if (explicitIcon) return explicitIcon;
 
   const id = toolId.toLowerCase();
-  if (id.includes('comment')) return '💬';
-  if (/search|grep|find|list|semantic|changes|codebase/.test(id)) return '🔍';
-  if (/read|get_file|problems/.test(id)) return '📖';
-  if (/edit|create|replace|patch|write/.test(id)) return '✏️';
-  if (id.includes('terminal')) return '💻';
-  if (id.includes('browser')) return '🌐';
-  if (id.includes('test')) return '🧪';
-  if (id.includes('git')) return '📦';
-  return '🔧';
+  if (id.includes('comment')) return 'comment-discussion';
+  if (/search|grep|find|list|semantic|changes|codebase/.test(id)) return 'search';
+  if (/read|get_file|problems/.test(id)) return 'file-code';
+  if (/edit|create|replace|patch|write/.test(id)) return 'edit';
+  if (id.includes('terminal')) return 'terminal';
+  if (id.includes('browser')) return 'globe';
+  if (id.includes('test')) return 'beaker';
+  if (id.includes('git')) return 'source-control';
+  return 'wrench';
 }
 
 /** Check if a tool ID represents a terminal/shell command tool. */

@@ -7,6 +7,7 @@
 import { memo, useState, useCallback } from 'react';
 import type { TipPart } from '../../types/content-parts';
 import { cn } from '../../utils/cn';
+import { Icon } from '../atoms/Icon';
 import { IconButton } from '../atoms/IconButton';
 
 export interface TipContentProps extends TipPart {
@@ -34,7 +35,7 @@ export const TipContent = memo(function TipContent({
       data-testid="tip-content"
     >
       <span className="ac-notification__icon" aria-hidden="true">
-        💡
+        <Icon name="lightbulb" />
       </span>
       <span className="ac-notification__message">{message}</span>
       {dismissible && <IconButton icon="✕" label="Dismiss" onClick={handleDismiss} size="small" />}

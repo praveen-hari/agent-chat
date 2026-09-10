@@ -7,6 +7,7 @@
 
 import { memo, useState, useCallback } from 'react';
 import { cn } from '../../utils/cn';
+import { Icon } from './Icon';
 
 export interface CollapsibleSectionProps {
   /** Section header title */
@@ -59,7 +60,7 @@ export const CollapsibleSection = memo(function CollapsibleSection({
   }, [isExpanded, onToggle]);
 
   // Determine status icon
-  const statusIcon = isLoading ? '⟳' : isComplete ? '✓' : undefined;
+  const statusIconName = isLoading ? 'loading' : isComplete ? 'pass' : undefined;
 
   return (
     <div
@@ -81,19 +82,18 @@ export const CollapsibleSection = memo(function CollapsibleSection({
         aria-label={`${title}${count != null ? `, ${count} items` : ''}`}
       >
         <span className={cn('ac-chevron', isExpanded && 'ac-chevron--open')} aria-hidden="true">
-          ▶
+          <Icon name="chevron-right" />
         </span>
 
-        {statusIcon && (
+        {statusIconName && (
           <span
             className={cn(
               'ac-collapsible__status',
-              isLoading && 'ac-spinner',
               isComplete && 'ac-collapsible__status--complete',
             )}
             aria-hidden="true"
           >
-            {statusIcon}
+            <Icon name={statusIconName} spin={isLoading} />
           </span>
         )}
 

@@ -5,6 +5,7 @@
  *   import '@agent-chat/react/styles.css';
  */
 
+@import '@vscode/codicons/dist/codicon.css';
 @import './reset.css';
 @import './tokens.css';
 @import './base.css';

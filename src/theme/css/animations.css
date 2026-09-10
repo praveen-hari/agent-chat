@@ -91,6 +91,11 @@
   animation: ac-spin 1s linear infinite;
 }
 
+/* Codicon spin class */
+.ac-icon-spin {
+  animation: ac-spin 1s linear infinite;
+}
+
 /* ─── Fade in ─── */
 @keyframes ac-fade-in {
   from {

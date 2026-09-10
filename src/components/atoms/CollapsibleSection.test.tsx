@@ -117,21 +117,21 @@ describe('CollapsibleSection', () => {
   });
 
   test('shows complete status icon', () => {
-    render(
+    const { container } = render(
       <CollapsibleSection title="Done" isComplete>
         <span>content</span>
       </CollapsibleSection>,
     );
-    expect(screen.getByText('✓')).toBeInTheDocument();
+    expect(container.querySelector('.codicon-pass')).toBeInTheDocument();
   });
 
   test('shows loading status icon', () => {
-    render(
+    const { container } = render(
       <CollapsibleSection title="Loading" isLoading>
         <span>content</span>
       </CollapsibleSection>,
     );
-    expect(screen.getByText('⟳')).toBeInTheDocument();
+    expect(container.querySelector('.codicon-loading')).toBeInTheDocument();
   });
 
   test('renders actions in header', () => {

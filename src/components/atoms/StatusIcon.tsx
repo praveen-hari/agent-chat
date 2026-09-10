@@ -7,6 +7,7 @@
 
 import { memo } from 'react';
 import { cn } from '../../utils/cn';
+import { Icon } from './Icon';
 
 export type StatusIconStatus =
   'running' | 'complete' | 'failed' | 'cancelled' | 'pending' | 'warning' | 'info';
@@ -22,14 +23,14 @@ export interface StatusIconProps {
   className?: string;
 }
 
-const STATUS_ICONS: Record<StatusIconStatus, string> = {
-  running: '⟳',
-  complete: '✓',
-  failed: '✕',
-  cancelled: '○',
-  pending: '◯',
-  warning: '⚠',
-  info: 'ℹ',
+const STATUS_CODICONS: Record<StatusIconStatus, string> = {
+  running: 'loading',
+  complete: 'pass',
+  failed: 'error',
+  cancelled: 'circle-outline',
+  pending: 'circle-outline',
+  warning: 'warning',
+  info: 'info',
 };
 
 export const StatusIcon = memo(function StatusIcon({
@@ -42,16 +43,11 @@ export const StatusIcon = memo(function StatusIcon({
 
   return (
     <span
-      className={cn(
-        'ac-status-icon',
-        `ac-status-icon--${status}`,
-        shouldAnimate && 'ac-spinner',
-        className,
-      )}
-      style={{ width: `${size}px`, height: `${size}px`, fontSize: `${size}px` }}
+      className={cn('ac-status-icon', `ac-status-icon--${status}`, className)}
+      style={{ width: `${size}px`, height: `${size}px` }}
       aria-hidden="true"
     >
-      {STATUS_ICONS[status]}
+      <Icon name={STATUS_CODICONS[status]} size={size} spin={shouldAnimate} />
     </span>
   );
 });

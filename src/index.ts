@@ -144,6 +144,8 @@ export type { ChatContextValue } from './provider/ChatContext';
 // ═══════════════════════════════════════════
 // ATOM COMPONENTS
 // ═══════════════════════════════════════════
+export { Icon, ICONS } from './components/atoms/Icon';
+export type { IconProps, IconName } from './components/atoms/Icon';
 export { Avatar } from './components/atoms/Avatar';
 export type { AvatarProps } from './components/atoms/Avatar';
 export { Username } from './components/atoms/Username';

@@ -9,6 +9,7 @@ import { memo, useState, useCallback } from 'react';
 import type { TerminalCommandPart } from '../../types/content-parts';
 import { cn } from '../../utils/cn';
 import { truncate } from './toolUtils';
+import { Icon } from '../atoms/Icon';
 import { PixelSpinner } from '../atoms/PixelSpinner';
 import { IconButton } from '../atoms/IconButton';
 import { useChatContext } from '../../provider/useChatContext';
@@ -31,7 +32,7 @@ function ExitCodeBadge({ code }: { code: number | null }) {
       )}
       aria-label={`Exit code ${code}`}
     >
-      {isSuccess ? '✓' : '✕'} {code}
+      <Icon name={isSuccess ? 'pass' : 'error'} size={12} /> {code}
     </span>
   );
 }
@@ -66,7 +67,7 @@ export const TerminalToolDisplay = memo(function TerminalToolDisplay({
     <div className={cn('ac-terminal-tool', className)} data-testid="terminal-tool-display">
       <div className="ac-terminal-tool__header">
         <span className="ac-terminal-tool__icon" aria-hidden="true">
-          💻
+          <Icon name="terminal" />
         </span>
         <span className="ac-terminal-tool__command" title={command}>
           <span className="ac-terminal-tool__prompt">$</span> {truncate(command, 60)}
@@ -81,7 +82,7 @@ export const TerminalToolDisplay = memo(function TerminalToolDisplay({
           <IconButton icon="💻" label="Focus Terminal" onClick={handleFocusTerminal} size="small" />
           {isRunning && (
             <IconButton
-              icon="⏩"
+              icon="debug-continue"
               label="Continue in Background"
               onClick={handleBackground}
               size="small"
@@ -89,7 +90,7 @@ export const TerminalToolDisplay = memo(function TerminalToolDisplay({
           )}
           {output && (
             <IconButton
-              icon={expanded ? '▲' : '▼'}
+              icon={expanded ? 'chevron-up' : 'chevron-down'}
               label={expanded ? 'Collapse Output' : 'Expand Output'}
               onClick={toggleExpand}
               size="small"

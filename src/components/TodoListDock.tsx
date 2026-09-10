@@ -9,6 +9,7 @@ import { memo, useState, useCallback } from 'react';
 import type { TodoItem } from '../types/content-parts';
 import { cn } from '../utils/cn';
 import { Badge } from './atoms/Badge';
+import { Icon } from './atoms/Icon';
 import { StatusIcon } from './atoms/StatusIcon';
 import { IconButton } from './atoms/IconButton';
 
@@ -66,12 +67,12 @@ export const TodoListDock = memo(function TodoListDock({
           aria-label={`Todos, ${pendingCount} remaining`}
         >
           <span className="ac-todo-dock__chevron" aria-hidden="true">
-            {isExpanded ? '▼' : '▶'}
+            <Icon name={isExpanded ? 'chevron-down' : 'chevron-right'} />
           </span>
           <span className="ac-todo-dock__title">Todos</span>
           {pendingCount > 0 && <Badge count={pendingCount} variant="info" />}
         </button>
-        <IconButton icon="✕" label="Close" onClick={handleClose} size="small" />
+        <IconButton icon="close" label="Close" onClick={handleClose} size="small" />
       </div>
 
       {isExpanded && (

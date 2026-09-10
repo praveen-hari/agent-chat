@@ -7,6 +7,7 @@
 import { memo, useState, useCallback } from 'react';
 import type { FileTreePart, TreeNode } from '../../types/content-parts';
 import { cn } from '../../utils/cn';
+import { Icon } from '../atoms/Icon';
 import { useChatContext } from '../../provider/useChatContext';
 
 export interface FileTreeProps extends FileTreePart {
@@ -52,7 +53,10 @@ const TreeNodeItem = memo(function TreeNodeItem({ node, level, onFileClick }: Tr
         aria-label={node.label}
       >
         <span className="ac-file-tree__icon" aria-hidden="true">
-          {node.isDirectory ? (expanded ? '📂' : '📁') : '📄'}
+          <Icon
+            name={node.isDirectory ? (expanded ? 'folder-opened' : 'folder') : 'file'}
+            size={14}
+          />
         </span>
         <span className="ac-file-tree__label">{node.label}</span>
       </div>

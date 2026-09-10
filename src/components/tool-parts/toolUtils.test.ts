@@ -11,36 +11,36 @@ describe('resolveToolIcon', () => {
   });
 
   test('returns search icon for search tools', () => {
-    expect(resolveToolIcon('grep_search')).toBe('🔍');
-    expect(resolveToolIcon('semantic_search')).toBe('🔍');
-    expect(resolveToolIcon('find_references')).toBe('🔍');
+    expect(resolveToolIcon('grep_search')).toBe('search');
+    expect(resolveToolIcon('semantic_search')).toBe('search');
+    expect(resolveToolIcon('find_references')).toBe('search');
   });
 
   test('returns read icon for read tools', () => {
-    expect(resolveToolIcon('read_file')).toBe('📖');
-    expect(resolveToolIcon('get_file_contents')).toBe('📖');
+    expect(resolveToolIcon('read_file')).toBe('file-code');
+    expect(resolveToolIcon('get_file_contents')).toBe('file-code');
   });
 
   test('returns edit icon for edit tools', () => {
-    expect(resolveToolIcon('edit_file')).toBe('✏️');
-    expect(resolveToolIcon('create_file')).toBe('✏️');
-    expect(resolveToolIcon('replace_string')).toBe('✏️');
+    expect(resolveToolIcon('edit_file')).toBe('edit');
+    expect(resolveToolIcon('create_file')).toBe('edit');
+    expect(resolveToolIcon('replace_string')).toBe('edit');
   });
 
   test('returns terminal icon for terminal tools', () => {
-    expect(resolveToolIcon('run_in_terminal')).toBe('💻');
+    expect(resolveToolIcon('run_in_terminal')).toBe('terminal');
   });
 
   test('returns browser icon for browser tools', () => {
-    expect(resolveToolIcon('open_browser')).toBe('🌐');
+    expect(resolveToolIcon('open_browser')).toBe('globe');
   });
 
   test('returns test icon for test tools', () => {
-    expect(resolveToolIcon('run_test')).toBe('🧪');
+    expect(resolveToolIcon('run_test')).toBe('beaker');
   });
 
   test('returns default wrench for unknown tools', () => {
-    expect(resolveToolIcon('custom_tool')).toBe('🔧');
+    expect(resolveToolIcon('custom_tool')).toBe('wrench');
   });
 });
 

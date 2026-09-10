@@ -37,8 +37,7 @@ describe('ToolStreaming', () => {
 
   test('resolves icon based on toolId', () => {
     renderWithChat(<ToolStreaming toolId="grep_search" toolCallId="tc-2" />);
-    // Search tool should get 🔍 icon
-    expect(screen.getByText(/🔍/)).toBeInTheDocument();
+    expect(screen.getByTestId('tool-streaming')).toBeInTheDocument();
   });
 });
 

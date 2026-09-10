@@ -63,10 +63,10 @@ export const RequestRow = memo(function RequestRow({
         actions={
           <>
             {callbacks.onEditRequest && (
-              <IconButton icon="✏️" label="Edit" onClick={handleEdit} size="small" />
+              <IconButton icon="edit" label="Edit" onClick={handleEdit} size="small" />
             )}
             {callbacks.onDeleteRequest && (
-              <IconButton icon="🗑" label="Delete" onClick={handleDelete} size="small" />
+              <IconButton icon="trash" label="Delete" onClick={handleDelete} size="small" />
             )}
           </>
         }

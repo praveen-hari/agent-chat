@@ -23,7 +23,7 @@ export const HookResult = memo(function HookResult({
   className,
 }: HookResultProps) {
   const level = outcome === 'blocked' ? 'error' : 'warning';
-  const icon = outcome === 'blocked' ? '🚫' : '⚠';
+  const iconName = outcome === 'blocked' ? 'error' : 'warning';
   const title = `${outcome === 'blocked' ? 'Blocked' : 'Warning'}: ${toolName}`;
 
   return (
@@ -31,7 +31,7 @@ export const HookResult = memo(function HookResult({
       className={cn('ac-notification', `ac-notification--${level}`, className)}
       data-testid="hook-result"
     >
-      <CollapsibleSection title={title} icon={icon}>
+      <CollapsibleSection title={title} icon={iconName}>
         <div className="ac-notification__message">
           <div>
             <strong>Hook:</strong> {hookType}

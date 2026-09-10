@@ -8,6 +8,7 @@
 import { memo } from 'react';
 import type { SystemNotificationPart } from '../../types/content-parts';
 import { cn } from '../../utils/cn';
+import { Icon } from '../atoms/Icon';
 import { CollapsibleSection } from '../atoms/CollapsibleSection';
 
 export interface SystemNotificationProps extends SystemNotificationPart {
@@ -57,7 +58,7 @@ export const SystemNotification = memo(function SystemNotification({
       data-testid="system-notification"
     >
       <span className="ac-notification__icon" aria-hidden="true">
-        {icon ?? 'ℹ'}
+        <Icon name={icon ?? 'info'} />
       </span>
       <span className="ac-notification__message">
         {message}

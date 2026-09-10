@@ -6,6 +6,7 @@
 
 import { memo } from 'react';
 import { cn } from '../../utils/cn';
+import { Icon } from './Icon';
 
 export interface IconButtonProps {
   /** Icon identifier or emoji */
@@ -54,7 +55,7 @@ export const IconButton = memo(function IconButton({
       type="button"
     >
       <span className="ac-icon-button__icon" aria-hidden="true">
-        {icon}
+        {/^[a-z]/.test(icon) ? <Icon name={icon} /> : icon}
       </span>
       {showLabel && <span className="ac-icon-button__label">{label}</span>}
       {keybinding && <kbd className="ac-keybinding">{keybinding}</kbd>}

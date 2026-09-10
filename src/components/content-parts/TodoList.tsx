@@ -7,16 +7,17 @@
 import { memo } from 'react';
 import type { TodoListPart, TodoItemStatus } from '../../types/content-parts';
 import { cn } from '../../utils/cn';
+import { Icon } from '../atoms/Icon';
 
 export interface TodoListProps extends TodoListPart {
   /** Additional CSS class */
   className?: string;
 }
 
-const STATUS_ICONS: Record<TodoItemStatus, string> = {
-  completed: '✓',
-  'in-progress': '●',
-  'not-started': '○',
+const STATUS_CODICONS: Record<TodoItemStatus, string> = {
+  completed: 'pass',
+  'in-progress': 'circle-filled',
+  'not-started': 'circle-outline',
 };
 
 const STATUS_LABELS: Record<TodoItemStatus, string> = {
@@ -38,7 +39,7 @@ export const TodoList = memo(function TodoList({ items, className }: TodoListPro
             className={cn('ac-todo-list__status', `ac-todo-list__status--${item.status}`)}
             aria-label={STATUS_LABELS[item.status]}
           >
-            {STATUS_ICONS[item.status]}
+            <Icon name={STATUS_CODICONS[item.status]} size={14} />
           </span>
           <span className="ac-todo-list__title">{item.title}</span>
         </div>

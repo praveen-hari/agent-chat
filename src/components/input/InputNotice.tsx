@@ -6,6 +6,7 @@
 
 import { memo } from 'react';
 import { cn } from '../../utils/cn';
+import { Icon } from '../atoms/Icon';
 import { IconButton } from '../atoms/IconButton';
 
 export interface InputNoticeProps {
@@ -25,10 +26,10 @@ export interface InputNoticeProps {
   className?: string;
 }
 
-const VARIANT_ICONS: Record<string, string> = {
-  tip: '💡',
-  warning: '⚠',
-  info: 'ℹ',
+const VARIANT_CODICONS: Record<string, string> = {
+  tip: 'lightbulb',
+  warning: 'warning',
+  info: 'info',
 };
 
 export const InputNotice = memo(function InputNotice({
@@ -47,7 +48,7 @@ export const InputNotice = memo(function InputNotice({
       data-testid="input-notice"
     >
       <span className="ac-input-notice__icon" aria-hidden="true">
-        {icon ?? VARIANT_ICONS[variant]}
+        {icon ? icon : <Icon name={VARIANT_CODICONS[variant]} />}
       </span>
       <span className="ac-input-notice__message">{message}</span>
       {action && (
@@ -56,7 +57,7 @@ export const InputNotice = memo(function InputNotice({
         </button>
       )}
       {dismissible && onDismiss && (
-        <IconButton icon="✕" label="Dismiss" onClick={onDismiss} size="small" />
+        <IconButton icon="close" label="Dismiss" onClick={onDismiss} size="small" />
       )}
     </div>
   );

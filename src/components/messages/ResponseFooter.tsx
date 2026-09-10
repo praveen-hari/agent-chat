@@ -53,7 +53,7 @@ export const ResponseFooter = memo(function ResponseFooter({
       <div className="ac-response-footer__toolbar">
         {config.showCopyButton && (
           <IconButton
-            icon={copied ? '✓' : '📋'}
+            icon={copied ? 'pass' : 'copy'}
             label={copied ? 'Copied!' : 'Copy Response'}
             onClick={handleCopyAll}
             size="small"
@@ -62,14 +62,14 @@ export const ResponseFooter = memo(function ResponseFooter({
         {config.showVoteButtons && callbacks.onVote && (
           <>
             <IconButton
-              icon="👍"
+              icon="thumbsup"
               label="Helpful"
               variant={response.vote === 'up' ? 'primary' : 'default'}
               onClick={() => actions.vote(response.id, 'up')}
               size="small"
             />
             <IconButton
-              icon="👎"
+              icon="thumbsdown"
               label="Not Helpful"
               variant={response.vote === 'down' ? 'danger' : 'default'}
               onClick={() => actions.vote(response.id, 'down')}

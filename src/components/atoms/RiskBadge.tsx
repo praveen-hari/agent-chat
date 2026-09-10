@@ -7,6 +7,7 @@
 import { memo } from 'react';
 import type { RiskLevel } from '../../types/content-parts';
 import { cn } from '../../utils/cn';
+import { Icon } from './Icon';
 
 export interface RiskBadgeProps {
   /** Risk level */
@@ -19,11 +20,11 @@ export interface RiskBadgeProps {
   className?: string;
 }
 
-const RISK_CONFIG: Record<RiskLevel, { icon: string; label: string }> = {
-  assessing: { icon: '⟳', label: 'Assessing risk…' },
-  low: { icon: '✓', label: 'Low risk' },
-  medium: { icon: '⚠', label: 'Medium risk' },
-  high: { icon: '✕', label: 'High risk' },
+const RISK_CONFIG: Record<RiskLevel, { codicon: string; label: string }> = {
+  assessing: { codicon: 'loading', label: 'Assessing risk…' },
+  low: { codicon: 'pass', label: 'Low risk' },
+  medium: { codicon: 'warning', label: 'Medium risk' },
+  high: { codicon: 'error', label: 'High risk' },
 };
 
 export const RiskBadge = memo(function RiskBadge({
@@ -40,11 +41,8 @@ export const RiskBadge = memo(function RiskBadge({
       title={detail ?? config.label}
       aria-label={config.label}
     >
-      <span
-        className={cn('ac-risk-badge__icon', level === 'assessing' && 'ac-spinner')}
-        aria-hidden="true"
-      >
-        {config.icon}
+      <span className="ac-risk-badge__icon" aria-hidden="true">
+        <Icon name={config.codicon} spin={level === 'assessing'} />
       </span>
       {showText && <span className="ac-risk-badge__text">{config.label}</span>}
     </span>

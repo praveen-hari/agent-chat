@@ -58,7 +58,7 @@ export const CodeBlock = memo(function CodeBlock({
         {showToolbar && (
           <div className="ac-code-block__toolbar">
             <IconButton
-              icon={copied ? '✓' : '📋'}
+              icon={copied ? 'pass' : 'copy'}
               label={copied ? 'Copied!' : 'Copy'}
               onClick={handleCopy}
               size="small"
