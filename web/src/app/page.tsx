@@ -1,66 +1,64 @@
 'use client';
 
 /**
- * Demo App — @agent-chat/react + OpenAI Agents SDK
+ * Coding Agent Demo — Full end-to-end @agent-chat/react integration
  *
  * Architecture:
- *   useAgentChat hook → SSE → API route (@openai/agents) → Agent loop
- *   useAgentChat produces ChatSession → ChatProvider → AgentChat (library)
+ *   OpenAIAgentAdapter (ChatAgentAdapter)
+ *     → useAgentSession (library hook) → ChatSession
+ *       → ChatProvider (library) → AgentChat (library)
+ *
+ * Everything flows through the library's standard interfaces.
  */
 
-import { useState, useCallback } from 'react';
-import { useAgentChat } from '@/lib/useAgentChat';
+import { useState, useCallback, useMemo } from 'react';
+import { OpenAIAgentAdapter } from '@/lib/OpenAIAgentAdapter';
 
-// ─── IMPORT FROM @agent-chat/react LIBRARY ───
-import { ChatProvider, AgentChat, darkTheme } from '@agent-chat/react';
+// ─── ALL IMPORTS FROM @agent-chat/react LIBRARY ───
+import {
+  ChatProvider,
+  AgentChat,
+  darkTheme,
+  useAgentSession,
+} from '@agent-chat/react';
 
-// Import VS Code codicon font directly (needed for Next.js CSS resolution)
+// Import VS Code codicon font + library CSS
 import '@vscode/codicons/dist/codicon.css';
-// Import the library's CSS
 import '../../../src/theme/css/index.css';
 
 const MODELS = [
   { id: 'gpt-4.1-nano', label: 'GPT-4.1 Nano', desc: 'Fastest' },
-  { id: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', desc: 'Affordable' },
+  { id: 'gpt-4.1-mini', label: 'GPT-4.1 Mini', desc: 'Best value' },
   { id: 'gpt-4.1', label: 'GPT-4.1', desc: 'Best for coding' },
   { id: 'gpt-4o-mini', label: 'GPT-4o Mini', desc: 'Multimodal' },
   { id: 'gpt-4o', label: 'GPT-4o', desc: 'Strong multimodal' },
-  { id: 'o4-mini', label: 'o4-mini', desc: 'Fast reasoning' },
+  { id: 'o4-mini', label: 'o4-mini', desc: 'Reasoning' },
 ];
 
-const DEMOS = [
-  { id: 'chat', label: 'Chat', icon: '💬', desc: 'General AI assistant' },
-  { id: 'tools', label: 'Agent + Tools', icon: '🔧', desc: 'Weather, calculator, search' },
-  { id: 'code', label: 'Code Agent', icon: '💻', desc: 'Multi-agent handoff to Code Assistant' },
-  { id: 'research', label: 'Research Agent', icon: '🔍', desc: 'Multi-agent handoff to Research' },
+const SUGGESTIONS = [
+  { label: 'Read project files', message: 'List all the files in this project and read the main source files', icon: '📂' },
+  { label: 'Write a React component', message: 'Write a React TodoList component in src/components/TodoList.tsx with TypeScript. Include add, toggle, and delete functionality.', icon: '⚛️' },
+  { label: 'Review the code', message: 'Review the code in src/utils.ts. Check for bugs, suggest improvements, and rate the code quality.', icon: '🔍' },
+  { label: 'Fix a bug & test', message: 'Search for any issues in the codebase, fix them, and run the tests to verify.', icon: '🐛' },
+  { label: 'Research & implement', message: 'Research best practices for error handling in TypeScript, then create an error handling utility in src/errors.ts', icon: '📚' },
+  { label: 'Full task with plan', message: 'Create a comprehensive logging system for the project: 1) Plan the approach with todos, 2) Create logger.ts, 3) Add it to existing files, 4) Run tests', icon: '📋' },
 ];
-
-const DEMO_SUGGESTIONS: Record<string, Array<{ label: string; message: string; icon?: string }>> = {
-  chat: [
-    { label: 'Explain quantum computing', message: 'Explain quantum computing in simple terms', icon: '🔬' },
-    { label: 'Write a haiku', message: 'Write a haiku about programming', icon: '📝' },
-  ],
-  tools: [
-    { label: 'Weather in Tokyo', message: "What's the weather in Tokyo, Japan?", icon: '🌤️' },
-    { label: 'Calculate 123 × 456', message: 'Calculate (123 * 456) + 789', icon: '🔢' },
-    { label: 'Multi-step task', message: "Get the weather in London, then calculate the square of the temperature number", icon: '🔄' },
-  ],
-  code: [
-    { label: 'React Todo component', message: 'Write a React component for a todo list with TypeScript', icon: '⚛️' },
-    { label: 'REST API endpoint', message: 'Write a REST API endpoint in Node.js for user authentication', icon: '🔌' },
-  ],
-  research: [
-    { label: 'Latest AI news', message: 'Research the latest developments in AI and summarize them', icon: '🤖' },
-    { label: 'Quantum computing advances', message: 'Search for recent quantum computing breakthroughs and write a brief summary', icon: '🔬' },
-  ],
-};
 
 export default function DemoApp() {
   const [selectedModel, setSelectedModel] = useState('gpt-4.1-mini');
-  const [activeDemo, setActiveDemo] = useState('chat');
 
+  // ─── Create adapter (implements ChatAgentAdapter interface) ───
+  const adapter = useMemo(() => {
+    const a = new OpenAIAgentAdapter({ model: selectedModel });
+    return a;
+  }, [selectedModel]);
+
+  // ─── Use the library's useAgentSession hook ───
   const { session, sendMessage, cancel, clearMessages, isStreaming, error } =
-    useAgentChat({ model: selectedModel });
+    useAgentSession(adapter, {
+      sessionId: 'coding-agent-session',
+      defaultAgent: { id: 'coding-agent', name: 'Coding Agent', icon: { iconId: 'copilot' } },
+    });
 
   const handleSendMessage = useCallback(
     (text: string) => { sendMessage(text); },
@@ -68,48 +66,51 @@ export default function DemoApp() {
   );
 
   const handleCancel = useCallback(() => { cancel(); }, [cancel]);
-
   const handleNewChat = useCallback(() => { clearMessages(); }, [clearMessages]);
-
-  const suggestions = DEMO_SUGGESTIONS[activeDemo] || DEMO_SUGGESTIONS.chat;
 
   return (
     <div className="demo-layout">
       {/* ─── Sidebar ─── */}
       <aside className="demo-sidebar">
         <div className="demo-sidebar__header">
-          <div className="demo-sidebar__title">Agent Chat Demo</div>
-          <div className="demo-sidebar__subtitle">@agent-chat/react + OpenAI Agents</div>
+          <div className="demo-sidebar__title">Coding Agent</div>
+          <div className="demo-sidebar__subtitle">@agent-chat/react demo</div>
         </div>
         <nav className="demo-sidebar__nav">
           <button className="demo-nav-item" onClick={handleNewChat}>
-            <span className="demo-nav-item__icon">✨</span>New Chat
+            <span className="demo-nav-item__icon">
+              <i className="codicon codicon-add" />
+            </span>
+            New Chat
           </button>
-          <div style={{ padding: '12px 14px 6px', fontSize: 11, color: '#585b70', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Demos
+
+          <div style={{ padding: '16px 14px 8px', fontSize: 11, color: '#585b70', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Features
           </div>
-          {DEMOS.map((d) => (
-            <button
-              key={d.id}
-              className={`demo-nav-item ${activeDemo === d.id ? 'demo-nav-item--active' : ''}`}
-              onClick={() => { setActiveDemo(d.id); handleNewChat(); }}
-            >
-              <span className="demo-nav-item__icon">{d.icon}</span>
-              <div>
-                <div>{d.label}</div>
-                <div style={{ fontSize: 10, color: '#585b70' }}>{d.desc}</div>
-              </div>
-            </button>
+          {[
+            { icon: 'codicon-file-code', label: 'Read/Write Files' },
+            { icon: 'codicon-search', label: 'Search Code' },
+            { icon: 'codicon-terminal', label: 'Run Commands' },
+            { icon: 'codicon-globe', label: 'Web Search' },
+            { icon: 'codicon-checklist', label: 'Task Planning' },
+            { icon: 'codicon-git-merge', label: 'Agent Handoffs' },
+            { icon: 'codicon-symbol-misc', label: 'Chain of Thought' },
+          ].map((f) => (
+            <div key={f.label} className="demo-nav-item" style={{ cursor: 'default', opacity: 0.7 }}>
+              <span className="demo-nav-item__icon"><i className={`codicon ${f.icon}`} /></span>
+              {f.label}
+            </div>
           ))}
         </nav>
         <div className="demo-sidebar__footer">
           <div style={{ marginBottom: 6 }}>
-            Status:{' '}
             <span className={`demo-badge ${!error ? 'demo-badge--green' : 'demo-badge--red'}`}>
-              {!error ? 'Connected' : 'Error'}
+              {!error ? '● Connected' : '✕ Error'}
             </span>
           </div>
-          <div>OpenAI Agents SDK · Agent Loop</div>
+          <div style={{ fontSize: 10, color: '#45475a' }}>
+            OpenAI Agents SDK · ChatAgentAdapter
+          </div>
         </div>
       </aside>
 
@@ -117,56 +118,53 @@ export default function DemoApp() {
       <main className="demo-main">
         {/* Settings Bar */}
         <div className="demo-settings">
-          <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <span className="demo-settings__label">Model</span>
             <select
               className="demo-settings__select"
               value={selectedModel}
               onChange={(e) => setSelectedModel(e.target.value)}
-              style={{ marginLeft: 8 }}
             >
               {MODELS.map((m) => (
-                <option key={m.id} value={m.id}>{m.label}</option>
+                <option key={m.id} value={m.id}>{m.label} — {m.desc}</option>
               ))}
             </select>
           </div>
-          <div style={{ marginLeft: 16 }}>
-            <span className={`demo-badge ${isStreaming ? 'demo-badge--yellow' : 'demo-badge--green'}`}>
-              {isStreaming ? '⟳ Agent running...' : '● Ready'}
-            </span>
+          <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+            {isStreaming && (
+              <span className="demo-badge demo-badge--yellow">
+                <i className="codicon codicon-loading ac-icon-spin" style={{ marginRight: 4 }} />
+                Agent running…
+              </span>
+            )}
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════
-            @agent-chat/react LIBRARY — ChatProvider + AgentChat
-            ══════════════════════════════════════════════ */}
+        {/* ══════════════════════════════════════════════════════
+            @agent-chat/react LIBRARY — Full Integration
+            ChatProvider + AgentChat using useAgentSession hook
+            ══════════════════════════════════════════════════════ */}
         <div className="demo-chat-container">
           <ChatProvider
             session={session}
             theme={darkTheme}
             onSendMessage={handleSendMessage}
             onCancelResponse={handleCancel}
-            activeAgent={{ id: 'ai-assistant', name: 'AI Assistant', icon: { iconId: 'copilot' } }}
+            activeAgent={{ id: 'coding-agent', name: 'Coding Agent', icon: { iconId: 'copilot' } }}
             config={{
               showVoteButtons: false,
               showCopyButton: true,
               showResponseDetails: true,
               showTokenUsage: false,
               showTodoList: true,
-              placeholder:
-                activeDemo === 'tools' ? 'Ask about weather, calculate, or search...'
-                  : activeDemo === 'code' ? 'Ask me to write code (hands off to Code Agent)...'
-                    : activeDemo === 'research' ? 'Ask me to research a topic...'
-                      : 'Type a message...',
-              welcomeTitle:
-                activeDemo === 'tools' ? '🔧 Agent + Tools Demo'
-                  : activeDemo === 'code' ? '💻 Code Agent (Multi-Agent Handoff)'
-                    : activeDemo === 'research' ? '🔍 Research Agent (Multi-Agent Handoff)'
-                      : '✨ AI Chat with Agent Loop',
-              welcomeSuggestions: suggestions,
+              placeholder: 'Ask the coding agent to read, write, search, or fix code…',
+              welcomeTitle: 'Coding Agent',
+              welcomeSuggestions: SUGGESTIONS,
             }}
           >
-            <AgentChat />
+            <AgentChat
+              welcomeSubtitle="I can read & write files, run commands, search code, plan tasks, and hand off to specialist agents. Try a suggestion below!"
+            />
           </ChatProvider>
         </div>
       </main>
