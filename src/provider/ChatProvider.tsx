@@ -214,42 +214,29 @@ export function ChatProvider({
     ],
   );
 
-  // ─── Normalize session (Model layer — validates consumer data) ───
-  // Follows VS Code's ChatModel pattern: guarantee content is always a valid array
-  // so renderers never crash on malformed data from any backend adapter.
-  const normalizedSession = useMemo<ChatSession>(() => {
-    const messages = session.messages.map((msg) => {
-      if (!Array.isArray(msg.content)) {
-        return { ...msg, content: [] };
-      }
-      return msg;
-    });
-    return messages === session.messages ? session : { ...session, messages };
-  }, [session]);
-
   // ─── Derived state ───
   const derivedState = useMemo(() => {
     const streamingResponse =
-      (normalizedSession.messages.find(
+      (session.messages.find(
         (m) => m.role === 'assistant' && (m as ChatResponse).state === 'streaming',
       ) as ChatResponse | undefined) ?? null;
 
     const lastResponse =
-      ([...normalizedSession.messages].reverse().find((m) => m.role === 'assistant') as
+      ([...session.messages].reverse().find((m) => m.role === 'assistant') as
         ChatResponse | undefined) ?? null;
 
     return {
       isStreaming: streamingResponse !== null,
       streamingResponse,
-      isEmpty: normalizedSession.messages.length === 0,
+      isEmpty: session.messages.length === 0,
       lastResponse,
     };
-  }, [normalizedSession]);
+  }, [session.messages]);
 
   // ─── Assemble context value ───
   const contextValue = useMemo<ChatContextValue>(
     () => ({
-      session: normalizedSession,
+      session,
       agents,
       activeAgent,
       config,
@@ -261,7 +248,7 @@ export function ChatProvider({
       ...derivedState,
     }),
     [
-      normalizedSession,
+      session,
       agents,
       activeAgent,
       config,

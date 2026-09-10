@@ -103,6 +103,26 @@ export type {
   AttachmentRendererMap,
 } from './types/config';
 
+// Agent adapter interface & event protocol
+export type {
+  ChatAgentAdapter,
+  ChatAgentRequestOptions,
+  ChatAgentEvent,
+  ChatAgentTextDeltaEvent,
+  ChatAgentCodeEvent,
+  ChatAgentReasoningEvent,
+  ChatAgentToolCallStartEvent,
+  ChatAgentToolCallDeltaEvent,
+  ChatAgentToolCallEndEvent,
+  ChatAgentToolApprovalEvent,
+  ChatAgentFileEvent,
+  ChatAgentSourceEvent,
+  ChatAgentHandoffEvent,
+  ChatAgentProgressEvent,
+  ChatAgentErrorEvent,
+  ChatAgentDoneEvent,
+} from './types/agent';
+
 // ═══════════════════════════════════════════
 // THEME
 // ═══════════════════════════════════════════
@@ -290,6 +310,8 @@ export type { TodoListDockProps } from './components/TodoListDock';
 // ═══════════════════════════════════════════
 // HOOKS
 // ═══════════════════════════════════════════
+export { useAgentSession } from './hooks/useAgentSession';
+export type { UseAgentSessionOptions, UseAgentSessionReturn } from './hooks/useAgentSession';
 export { useStreaming } from './hooks/useStreaming';
 export { useAutoScroll } from './hooks/useAutoScroll';
 export type { UseAutoScrollOptions, UseAutoScrollReturn } from './hooks/useAutoScroll';
