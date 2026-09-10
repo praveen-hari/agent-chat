@@ -222,3 +222,27 @@ export { SuggestNext } from './components/interactive/SuggestNext';
 export type { SuggestNextProps } from './components/interactive/SuggestNext';
 export { PullRequestCard } from './components/interactive/PullRequestCard';
 export type { PullRequestCardProps } from './components/interactive/PullRequestCard';
+
+// ═══════════════════════════════════════════
+// TOOL INVOCATION COMPONENTS
+// ═══════════════════════════════════════════
+export { ToolCallDisplay } from './components/tool-parts/ToolCallDisplay';
+export type { ToolCallDisplayProps } from './components/tool-parts/ToolCallDisplay';
+export { ToolStreaming } from './components/tool-parts/ToolStreaming';
+export type { ToolStreamingProps } from './components/tool-parts/ToolStreaming';
+export { ToolConfirmation } from './components/tool-parts/ToolConfirmation';
+export type { ToolConfirmationProps } from './components/tool-parts/ToolConfirmation';
+export { ToolProgress } from './components/tool-parts/ToolProgress';
+export type { ToolProgressProps } from './components/tool-parts/ToolProgress';
+export { TerminalToolDisplay } from './components/tool-parts/TerminalToolDisplay';
+export type { TerminalToolDisplayProps } from './components/tool-parts/TerminalToolDisplay';
+export { ToolConfirmationCarousel } from './components/tool-parts/ToolConfirmationCarousel';
+export type { ToolConfirmationCarouselProps } from './components/tool-parts/ToolConfirmationCarousel';
+export { McpAppDisplay } from './components/tool-parts/McpAppDisplay';
+export type { McpAppDisplayProps } from './components/tool-parts/McpAppDisplay';
+export {
+  resolveToolIcon,
+  isTerminalTool,
+  truncate,
+  formatToolStatus,
+} from './components/tool-parts/toolUtils';

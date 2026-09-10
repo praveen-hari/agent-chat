@@ -116,7 +116,7 @@ describe('ContentPartRenderer', () => {
     expect(screen.getByTestId('custom-markdown')).toBeInTheDocument();
   });
 
-  test('renders tool-call as progress step', () => {
+  test('renders tool-call as ToolCallDisplay', () => {
     renderPart({
       kind: 'tool-call',
       toolId: 'read_file',
@@ -124,7 +124,6 @@ describe('ContentPartRenderer', () => {
       status: 'running',
       label: 'Reading file',
     });
-    expect(screen.getByTestId('progress-step')).toBeInTheDocument();
-    expect(screen.getByText('Reading file')).toBeInTheDocument();
+    expect(screen.getByTestId('tool-call-display')).toBeInTheDocument();
   });
 });

@@ -18,6 +18,10 @@ import { ThinkingBlock } from './ThinkingBlock';
 import { SubAgentDisplay } from './SubAgentDisplay';
 import { ProgressStep } from './ProgressStep';
 import { WorkingIndicator } from './WorkingIndicator';
+import { ToolCallDisplay } from '../tool-parts/ToolCallDisplay';
+import { ToolConfirmation } from '../tool-parts/ToolConfirmation';
+import { ToolConfirmationCarousel } from '../tool-parts/ToolConfirmationCarousel';
+import { TerminalToolDisplay } from '../tool-parts/TerminalToolDisplay';
 import { EditPill } from './EditPill';
 import { FileChangesSummary } from './FileChangesSummary';
 import { TurnPills } from './TurnPills';
@@ -99,29 +103,15 @@ export const ContentPartRenderer = memo(function ContentPartRenderer({
     case 'sub-agent':
       return <SubAgentDisplay {...part} isStreaming={isStreaming} />;
 
-    // Tool Invocations — Phase 6 (rendered as progress steps for now)
+    // Tool Invocations (Phase 6)
     case 'tool-call':
-      return (
-        <ProgressStep
-          kind="progress"
-          message={part.label ?? part.toolId}
-          isActive={part.status === 'running' || part.status === 'streaming'}
-        />
-      );
+      return <ToolCallDisplay {...part} isStreaming={isStreaming} />;
     case 'tool-confirmation':
-      return (
-        <ConfirmationDialog
-          kind="confirmation"
-          title={part.title}
-          message={part.message}
-          subtitle={part.subtitle}
-          buttons={part.actions.map((a) => ({ id: a.id, label: a.label, primary: a.primary }))}
-        />
-      );
+      return <ToolConfirmation {...part} />;
+    case 'tool-confirmation-carousel':
+      return <ToolConfirmationCarousel {...part} />;
     case 'terminal-command':
-      return (
-        <ProgressStep kind="progress" message={`$ ${part.command}`} isActive={part.isRunning} />
-      );
+      return <TerminalToolDisplay {...part} />;
 
     // File Changes & Diffs
     case 'edit-pill':
@@ -244,22 +234,7 @@ export const ContentPartRenderer = memo(function ContentPartRenderer({
     case 'code-citation':
       return <CodeBlock kind="code" code={part.code} language="text" />;
 
-    // Tool confirmation carousel — render first tool
-    case 'tool-confirmation-carousel': {
-      const tool = part.tools[part.currentIndex ?? 0];
-      if (tool) {
-        return (
-          <ConfirmationDialog
-            kind="confirmation"
-            title={tool.title}
-            message={tool.message}
-            subtitle={tool.subtitle}
-            buttons={tool.actions.map((a) => ({ id: a.id, label: a.label, primary: a.primary }))}
-          />
-        );
-      }
-      return null;
-    }
+    // tool-confirmation-carousel handled above in Phase 6 block
 
     default:
       return <UnknownPart kind={(part as { kind: string }).kind} />;
