@@ -273,31 +273,21 @@ export async function POST(req: Request) {
             const item = event.item as unknown as Record<string, unknown>;
 
             if (event.name === 'tool_called') {
-              // Extract tool name from RunItem — could be in .name, .toolName, or nested
-              const toolName = (item.name as string)
-                || (item.toolName as string)
-                || (item.rawItem as Record<string, unknown>)?.name as string
-                || (item.rawItem as Record<string, unknown>)?.function_name as string
-                || String(item.type || 'tool');
-              const callId = (item.callId as string)
-                || (item.rawItem as Record<string, unknown>)?.call_id as string
-                || `tc-${Date.now()}`;
-
-              // Log for debugging
-              console.log('[tool_called]', JSON.stringify(item, null, 2).slice(0, 500));
+              const raw = (item.rawItem || {}) as Record<string, unknown>;
+              const toolName = (raw.name as string) || (item.name as string) || 'tool';
+              const callId = (raw.callId as string) || (item.callId as string) || `tc-${Date.now()}`;
 
               send({
                 type: 'tool-call-start',
                 toolCallId: callId,
                 toolId: toolName,
-                input: item.arguments,
+                input: raw.arguments ? JSON.parse(raw.arguments as string) : item.arguments,
               });
             }
 
             if (event.name === 'tool_output') {
-              const callId = (item.callId as string)
-                || (item.rawItem as Record<string, unknown>)?.call_id as string
-                || '';
+              const raw = (item.rawItem || {}) as Record<string, unknown>;
+              const callId = (raw.callId as string) || (item.callId as string) || '';
               send({
                 type: 'tool-call-end',
                 toolCallId: callId,
