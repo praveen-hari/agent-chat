@@ -1,42 +1,24 @@
 /**
- * useAgentSession — React hook that drives any ChatAgentAdapter
+ * useAgentSession — production-ready hook that drives any ChatAgentAdapter
  * and produces a ChatSession for @agent-chat/react.
  *
- * This is the standard way to connect an agent to the library:
- *
- * @example
- * ```tsx
- * const adapter = new MyAgentAdapter();
- * const { session, sendMessage, cancel, isStreaming } = useAgentSession(adapter);
- *
- * <ChatProvider session={session} onSendMessage={sendMessage} onCancelResponse={cancel}>
- *   <AgentChat />
- * </ChatProvider>
- * ```
- *
- * The hook:
- * 1. Accepts a ChatAgentAdapter (consumer implements this)
- * 2. Calls adapter.sendMessage() when user sends a message
- * 3. Consumes the AsyncIterable<ChatAgentEvent> stream
- * 4. Builds ChatSession messages in real-time
- * 5. Returns a ready-to-use ChatSession
+ * Key design decisions:
+ * - **Ordered segments**: content parts are built in the order events arrive,
+ *   preserving interleaved thinking → tool → thinking → text flows
+ * - **Segment merging**: consecutive text-delta events merge into one markdown part,
+ *   consecutive reasoning events merge into one thinking part
+ * - **Immutable updates**: every state update creates new references so React
+ *   detects changes and re-renders
  *
  * @module hooks/useAgentSession
  */
 
 import { useState, useCallback, useRef } from 'react';
-import type {
-  ChatSession,
-  ChatRequest,
-  ChatResponse,
-  ChatAgent,
-} from '../types/models';
+import type { ChatSession, ChatRequest, ChatResponse, ChatAgent } from '../types/models';
 import type { ChatContentPart } from '../types/content-parts';
-import type {
-  ChatAgentAdapter,
-  ChatAgentEvent,
-  ChatAgentRequestOptions,
-} from '../types/agent';
+import type { ChatAgentAdapter, ChatAgentEvent, ChatAgentRequestOptions } from '../types/agent';
+
+// ─── Types ───
 
 export interface UseAgentSessionOptions {
   /** Session ID (default: auto-generated) */
@@ -61,6 +43,35 @@ export interface UseAgentSessionReturn {
   /** Last error message, if any */
   error: string | null;
 }
+
+/**
+ * An ordered content segment — tracks what type of content is being built
+ * and its position in the interleaved sequence.
+ */
+type ContentSegment =
+  | { type: 'text'; text: string }
+  | { type: 'reasoning'; text: string }
+  | {
+      type: 'tool';
+      toolCallId: string;
+      toolId: string;
+      input?: unknown;
+      output?: string;
+      status: 'streaming' | 'running' | 'complete' | 'failed';
+    }
+  | {
+      type: 'tool-approval';
+      toolCallId: string;
+      toolId: string;
+      message: string;
+      riskLevel?: 'low' | 'medium' | 'high';
+    }
+  | { type: 'source'; label: string; uri: string; icon?: string }
+  | { type: 'file'; url: string; mediaType: string; filename?: string }
+  | { type: 'progress'; message: string }
+  | { type: 'working' };
+
+// ─── Hook ───
 
 export function useAgentSession(
   adapter: ChatAgentAdapter,
@@ -93,27 +104,25 @@ export function useAgentSession(
       };
 
       const responseId = `assistant-${seq}-${Date.now()}`;
-      let currentText = '';
-      let reasoningText = '';
+      const startTime = Date.now();
       let currentAgent: ChatAgent = { ...defaultAgent };
-      const toolCalls = new Map<
-        string,
-        {
-          toolId: string;
-          toolCallId: string;
-          input?: unknown;
-          output?: string;
-          status: 'streaming' | 'running' | 'complete' | 'failed';
-        }
-      >();
-      const sources: Array<{ label: string; uri: string; icon?: string }> = [];
+
+      /**
+       * Ordered segment list — preserves the sequence:
+       *   reasoning → tool → reasoning → tool → text
+       * Each segment converts to one or more ChatContentParts.
+       */
+      const segments: ContentSegment[] = [];
+
+      /** Track which segment type is "active" for merging consecutive events */
+      let activeSegmentType: 'text' | 'reasoning' | null = null;
 
       // Initial streaming response
       const initialResponse: ChatResponse = {
         role: 'assistant',
         id: responseId,
         requestId: userMsg.id,
-        timestamp: Date.now(),
+        timestamp: startTime,
         state: 'streaming',
         content: [{ kind: 'working' } as ChatContentPart],
         agent: currentAgent,
@@ -125,32 +134,86 @@ export function useAgentSession(
       const abortController = new AbortController();
       abortRef.current = abortController;
 
-      // Build content parts from current state
-      const buildContent = (): ChatContentPart[] => {
+      // ─── Convert segments → ChatContentPart[] ───
+      const buildContent = (streaming: boolean): ChatContentPart[] => {
         const parts: ChatContentPart[] = [];
 
-        // Reasoning block
-        if (reasoningText) {
-          parts.push({
-            kind: 'thinking',
-            content: reasoningText,
-            isStreaming: true,
-          } as ChatContentPart);
+        // Collect sources separately (rendered as one block at the end)
+        const sources: Array<{ label: string; uri: string; icon?: string }> = [];
+
+        for (const seg of segments) {
+          switch (seg.type) {
+            case 'text':
+              if (seg.text) {
+                parts.push({ kind: 'markdown', content: seg.text });
+              }
+              break;
+
+            case 'reasoning':
+              if (seg.text) {
+                parts.push({
+                  kind: 'thinking',
+                  content: seg.text,
+                  isStreaming: streaming,
+                } as ChatContentPart);
+              }
+              break;
+
+            case 'tool':
+              parts.push({
+                kind: 'tool-call',
+                toolId: seg.toolId,
+                toolCallId: seg.toolCallId,
+                status: seg.status,
+                input: seg.input,
+                output: seg.output,
+              } as ChatContentPart);
+              break;
+
+            case 'tool-approval':
+              parts.push({
+                kind: 'tool-confirmation',
+                toolId: seg.toolId,
+                toolCallId: seg.toolCallId,
+                title: `Approve: ${seg.toolId}`,
+                message: seg.message,
+                riskLevel: seg.riskLevel,
+                actions: [
+                  { id: 'allow', label: 'Allow', primary: true },
+                  { id: 'deny', label: 'Deny' },
+                ],
+              } as ChatContentPart);
+              break;
+
+            case 'file':
+              if (seg.mediaType.startsWith('image/')) {
+                parts.push({
+                  kind: 'image',
+                  src: seg.url,
+                  alt: seg.filename,
+                } as ChatContentPart);
+              }
+              break;
+
+            case 'source':
+              sources.push({ label: seg.label, uri: seg.uri, icon: seg.icon });
+              break;
+
+            case 'progress':
+              parts.push({
+                kind: 'progress',
+                message: seg.message,
+                isActive: streaming,
+              } as ChatContentPart);
+              break;
+
+            case 'working':
+              parts.push({ kind: 'working' } as ChatContentPart);
+              break;
+          }
         }
 
-        // Tool calls
-        for (const tc of toolCalls.values()) {
-          parts.push({
-            kind: 'tool-call',
-            toolId: tc.toolId,
-            toolCallId: tc.toolCallId,
-            status: tc.status,
-            input: tc.input,
-            output: tc.output,
-          } as ChatContentPart);
-        }
-
-        // Sources
+        // Append sources as one references block
         if (sources.length > 0) {
           parts.push({
             kind: 'references',
@@ -162,29 +225,22 @@ export function useAgentSession(
           } as ChatContentPart);
         }
 
-        // Text content
-        if (currentText) {
-          parts.push({ kind: 'markdown', content: currentText });
-        }
-
-        // Nothing yet? Show working indicator
-        if (parts.length === 0) {
+        // If nothing rendered, show working indicator
+        if (parts.length === 0 && streaming) {
           parts.push({ kind: 'working' } as ChatContentPart);
         }
 
         return parts;
       };
 
-      // Update response in messages array
-      const updateResponse = (
-        overrides?: Partial<ChatResponse>,
-      ) => {
+      // ─── Update response in state ───
+      const updateResponse = (overrides?: Partial<ChatResponse>) => {
         setMessages((prev) =>
           prev.map((m) =>
             m.id === responseId
               ? ({
                   ...m,
-                  content: buildContent(),
+                  content: buildContent(true),
                   agent: currentAgent,
                   ...overrides,
                 } as ChatResponse)
@@ -193,10 +249,153 @@ export function useAgentSession(
         );
       };
 
-      try {
-        // Get the history (all messages before this one)
-        const history = messages;
+      // ─── Get or create the active mergeable segment ───
+      const getOrCreateTextSegment = (): ContentSegment & { type: 'text' } => {
+        if (activeSegmentType === 'text') {
+          const last = segments[segments.length - 1];
+          if (last?.type === 'text') return last;
+        }
+        const seg: ContentSegment = { type: 'text', text: '' };
+        segments.push(seg);
+        activeSegmentType = 'text';
+        return seg as ContentSegment & { type: 'text' };
+      };
 
+      const getOrCreateReasoningSegment = (): ContentSegment & { type: 'reasoning' } => {
+        if (activeSegmentType === 'reasoning') {
+          const last = segments[segments.length - 1];
+          if (last?.type === 'reasoning') return last;
+        }
+        const seg: ContentSegment = { type: 'reasoning', text: '' };
+        segments.push(seg);
+        activeSegmentType = 'reasoning';
+        return seg as ContentSegment & { type: 'reasoning' };
+      };
+
+      // ─── Process a single event ───
+      const processEvent = (event: ChatAgentEvent) => {
+        switch (event.type) {
+          case 'text-delta': {
+            const seg = getOrCreateTextSegment();
+            seg.text += event.text;
+            break;
+          }
+
+          case 'code': {
+            const seg = getOrCreateTextSegment();
+            seg.text += `\n\`\`\`${event.language}\n${event.code}\n\`\`\`\n`;
+            break;
+          }
+
+          case 'reasoning': {
+            const seg = getOrCreateReasoningSegment();
+            seg.text += event.text;
+            break;
+          }
+
+          case 'tool-call-start': {
+            activeSegmentType = null; // break merge chain
+            segments.push({
+              type: 'tool',
+              toolCallId: event.toolCallId,
+              toolId: event.toolId,
+              input: event.input,
+              status: 'running',
+            });
+            break;
+          }
+
+          case 'tool-call-delta': {
+            const toolSeg = segments.find(
+              (s) => s.type === 'tool' && s.toolCallId === event.toolCallId,
+            ) as (ContentSegment & { type: 'tool' }) | undefined;
+            if (toolSeg) {
+              toolSeg.status = 'streaming';
+              if (typeof toolSeg.input === 'string') {
+                toolSeg.input += event.argsDelta;
+              } else {
+                toolSeg.input = event.argsDelta;
+              }
+            }
+            break;
+          }
+
+          case 'tool-call-end': {
+            const toolSeg = segments.find(
+              (s) => s.type === 'tool' && s.toolCallId === event.toolCallId,
+            ) as (ContentSegment & { type: 'tool' }) | undefined;
+            if (toolSeg) {
+              toolSeg.output = event.output;
+              toolSeg.status = event.success === false ? 'failed' : 'complete';
+            }
+            break;
+          }
+
+          case 'tool-approval': {
+            activeSegmentType = null;
+            segments.push({
+              type: 'tool-approval',
+              toolCallId: event.toolCallId,
+              toolId: event.toolId,
+              message: event.message,
+              riskLevel: event.riskLevel,
+            });
+            break;
+          }
+
+          case 'file': {
+            activeSegmentType = null;
+            segments.push({
+              type: 'file',
+              url: event.url,
+              mediaType: event.mediaType,
+              filename: event.filename,
+            });
+            break;
+          }
+
+          case 'source': {
+            segments.push({
+              type: 'source',
+              label: event.label,
+              uri: event.uri,
+              icon: event.icon,
+            });
+            break;
+          }
+
+          case 'agent-handoff': {
+            currentAgent = {
+              id: event.agentName.toLowerCase().replace(/\s+/g, '-'),
+              name: event.agentName,
+              icon: event.agentIcon ?? '🤖',
+            };
+            break;
+          }
+
+          case 'progress': {
+            activeSegmentType = null;
+            segments.push({ type: 'progress', message: event.message });
+            break;
+          }
+
+          case 'error': {
+            setError(event.message);
+            break;
+          }
+
+          case 'done': {
+            if (event.agentName) {
+              currentAgent = { ...currentAgent, name: event.agentName };
+            }
+            break;
+          }
+        }
+      };
+
+      // ─── Run the agent stream ───
+      try {
+        const history = messages;
         const eventStream = adapter.sendMessage(text, history, {
           ...requestOptions,
           signal: abortController.signal,
@@ -208,11 +407,8 @@ export function useAgentSession(
           updateResponse();
         }
 
-        // Finalize
-        const finalContent = buildContent().map((p) =>
-          p.kind === 'thinking' ? { ...p, isStreaming: false } : p,
-        );
-
+        // ─── Finalize ───
+        const finalContent = buildContent(false);
         setMessages((prev) =>
           prev.map((m) =>
             m.id === responseId
@@ -222,7 +418,7 @@ export function useAgentSession(
                   completedAt: Date.now(),
                   content: finalContent,
                   agent: currentAgent,
-                  elapsedMs: Date.now() - initialResponse.timestamp,
+                  elapsedMs: Date.now() - startTime,
                 } as ChatResponse)
               : m,
           ),
@@ -241,105 +437,6 @@ export function useAgentSession(
       } finally {
         setIsStreaming(false);
         abortRef.current = null;
-      }
-
-      // ─── Event processor ───
-      function processEvent(event: ChatAgentEvent) {
-        switch (event.type) {
-          case 'text-delta':
-            currentText += event.text;
-            break;
-
-          case 'code':
-            // Append as a code fence in the text stream
-            currentText += `\n\`\`\`${event.language}\n${event.code}\n\`\`\`\n`;
-            break;
-
-          case 'reasoning':
-            reasoningText += event.text;
-            break;
-
-          case 'tool-call-start':
-            toolCalls.set(event.toolCallId, {
-              toolId: event.toolId,
-              toolCallId: event.toolCallId,
-              input: event.input,
-              status: 'running',
-            });
-            break;
-
-          case 'tool-call-delta': {
-            const tc = toolCalls.get(event.toolCallId);
-            if (tc) {
-              tc.status = 'streaming';
-              // Append to input if it's a string
-              if (typeof tc.input === 'string') {
-                tc.input += event.argsDelta;
-              } else {
-                tc.input = event.argsDelta;
-              }
-            }
-            break;
-          }
-
-          case 'tool-call-end': {
-            const tc = toolCalls.get(event.toolCallId);
-            if (tc) {
-              tc.output = event.output;
-              tc.status = event.success === false ? 'failed' : 'complete';
-            }
-            break;
-          }
-
-          case 'tool-approval':
-            // Create a confirmation-style tool call
-            toolCalls.set(event.toolCallId, {
-              toolId: event.toolId,
-              toolCallId: event.toolCallId,
-              status: 'running',
-            });
-            break;
-
-          case 'file':
-            // Add as image content part if it's an image
-            if (event.mediaType.startsWith('image/')) {
-              currentText += `\n![${event.filename ?? 'image'}](${event.url})\n`;
-            }
-            break;
-
-          case 'source':
-            sources.push({
-              label: event.label,
-              uri: event.uri,
-              icon: event.icon,
-            });
-            break;
-
-          case 'agent-handoff':
-            currentAgent = {
-              id: event.agentName.toLowerCase().replace(/\s+/g, '-'),
-              name: event.agentName,
-              icon: event.agentIcon ?? '🤖',
-            };
-            break;
-
-          case 'progress':
-            // Progress is transient — could show in working indicator
-            break;
-
-          case 'error':
-            setError(event.message);
-            break;
-
-          case 'done':
-            if (event.agentName) {
-              currentAgent = {
-                ...currentAgent,
-                name: event.agentName,
-              };
-            }
-            break;
-        }
       }
     },
     [isStreaming, adapter, defaultAgent, messages, requestOptions],

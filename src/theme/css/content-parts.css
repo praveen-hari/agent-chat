@@ -62,37 +62,107 @@
 
 .ac-thinking__body {
   padding: var(--ac-space-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ac-space-xs);
 }
 
+/* Reasoning content with markdown */
 .ac-thinking__reasoning {
-  max-height: 200px;
+  max-height: 300px;
   overflow-y: auto;
   padding: var(--ac-space-md);
   background: var(--ac-bg-thinking);
   border-radius: var(--ac-radius-sm);
   font-size: var(--ac-font-size-sm);
   color: var(--ac-fg-secondary);
-  margin-bottom: var(--ac-space-md);
+  line-height: 1.6;
 }
 
-.ac-thinking__tool-item {
+.ac-thinking__reasoning p {
+  margin: 0 0 var(--ac-space-xs);
+}
+
+.ac-thinking__reasoning p:last-child {
+  margin-bottom: 0;
+}
+
+.ac-thinking__reasoning code {
+  background: var(--ac-bg-code);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.ac-thinking__reasoning ul,
+.ac-thinking__reasoning ol {
+  margin: var(--ac-space-xs) 0;
+  padding-left: var(--ac-space-xl);
+}
+
+/* Tool items section */
+.ac-thinking__tools,
+.ac-thinking__edits {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.ac-thinking__tool-item,
+.ac-thinking__edit-item {
   display: flex;
   align-items: center;
   gap: var(--ac-space-md);
-  padding: var(--ac-space-xxs) 0;
+  padding: var(--ac-space-xxs) var(--ac-space-md);
   font-size: var(--ac-font-size-sm);
   color: var(--ac-fg-secondary);
+  border-radius: var(--ac-radius-sm);
+}
+
+.ac-thinking__tool-item:hover,
+.ac-thinking__edit-item:hover {
+  background: var(--ac-bg-hover);
+}
+
+.ac-thinking__tool-item--running {
+  color: var(--ac-fg-primary);
+}
+
+.ac-thinking__tool-item--failed {
+  color: var(--ac-error);
 }
 
 .ac-thinking__tool-icon {
   font-size: var(--ac-icon-size-sm);
+  flex-shrink: 0;
+}
+
+.ac-thinking__tool-label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ac-thinking__tool-status {
+  font-size: var(--ac-font-size-xs);
+  color: var(--ac-fg-tertiary);
+  flex-shrink: 0;
+}
+
+.ac-thinking__edit-icon {
+  flex-shrink: 0;
+  font-size: var(--ac-font-size-xs);
+  width: 14px;
+  text-align: center;
 }
 
 .ac-thinking__spinner {
   display: flex;
   align-items: center;
   gap: var(--ac-space-md);
-  padding: var(--ac-space-xs) 0;
+  padding: var(--ac-space-xs) var(--ac-space-md);
   font-size: var(--ac-font-size-sm);
   color: var(--ac-fg-tertiary);
 }

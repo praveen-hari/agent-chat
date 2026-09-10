@@ -41,7 +41,7 @@ describe('ThinkingBlock', () => {
 
   test('shows spinner when streaming', () => {
     renderWithChat(<ThinkingBlock kind="thinking" content="Working..." isStreaming />);
-    expect(screen.getByText('Thinking...')).toBeInTheDocument();
+    expect(screen.getByText('Thinking…')).toBeInTheDocument();
   });
 
   test('applies active class when streaming', () => {
