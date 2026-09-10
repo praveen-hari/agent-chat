@@ -88,10 +88,16 @@ export function useAgentSession(
   const [error, setError] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const seqRef = useRef(0);
+  const isStreamingRef = useRef(false);
+  const messagesRef = useRef<Array<ChatRequest | ChatResponse>>([]);
+
+  // Keep refs in sync with state
+  messagesRef.current = messages;
+  isStreamingRef.current = isStreaming;
 
   const sendMessage = useCallback(
     async (text: string) => {
-      if (!text.trim() || isStreaming) return;
+      if (!text.trim() || isStreamingRef.current) return;
       setError(null);
 
       const seq = ++seqRef.current;
@@ -395,7 +401,7 @@ export function useAgentSession(
 
       // ─── Run the agent stream ───
       try {
-        const history = messages;
+        const history = messagesRef.current;
         const eventStream = adapter.sendMessage(text, history, {
           ...requestOptions,
           signal: abortController.signal,
@@ -439,7 +445,7 @@ export function useAgentSession(
         abortRef.current = null;
       }
     },
-    [isStreaming, adapter, defaultAgent, messages, requestOptions],
+    [adapter, defaultAgent, requestOptions],
   );
 
   const cancel = useCallback(() => {
