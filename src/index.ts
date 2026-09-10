@@ -107,3 +107,16 @@ export type {
 // THEME
 // ═══════════════════════════════════════════
 export type { AgentChatTheme } from './theme/tokens';
+export { darkTheme } from './theme/dark';
+export { lightTheme } from './theme/light';
+export { ThemeProvider } from './theme/ThemeProvider';
+export type { ThemeProviderProps } from './theme/ThemeProvider';
+
+// ═══════════════════════════════════════════
+// PROVIDER
+// ═══════════════════════════════════════════
+export { ChatProvider } from './provider/ChatProvider';
+export type { ChatProviderProps } from './provider/ChatProvider';
+export { useChatContext, useChatSelector } from './provider/useChatContext';
+export { useChatActions } from './provider/useChatActions';
+export type { ChatContextValue } from './provider/ChatContext';
