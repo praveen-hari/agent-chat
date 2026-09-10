@@ -14,6 +14,8 @@ import { useAgentChat } from '@/lib/useAgentChat';
 // ─── IMPORT FROM @agent-chat/react LIBRARY ───
 import { ChatProvider, AgentChat, darkTheme } from '@agent-chat/react';
 
+// Import VS Code codicon font directly (needed for Next.js CSS resolution)
+import '@vscode/codicons/dist/codicon.css';
 // Import the library's CSS
 import '../../../src/theme/css/index.css';
 
@@ -144,7 +146,7 @@ export default function DemoApp() {
             theme={darkTheme}
             onSendMessage={handleSendMessage}
             onCancelResponse={handleCancel}
-            activeAgent={{ id: 'ai-assistant', name: 'AI Assistant', icon: '✨' }}
+            activeAgent={{ id: 'ai-assistant', name: 'AI Assistant', icon: { iconId: 'copilot' } }}
             config={{
               showVoteButtons: false,
               showCopyButton: true,

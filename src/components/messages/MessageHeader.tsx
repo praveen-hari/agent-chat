@@ -33,7 +33,7 @@ export const MessageHeader = memo(function MessageHeader({
   return (
     <div className={cn('ac-message-header', className)} data-testid="message-header">
       <div className="ac-message-header__user">
-        <Avatar icon={typeof avatar === 'string' ? avatar : '🤖'} name={username} size={24} />
+        <Avatar icon={avatar} name={username} size={24} />
         <Username name={username} />
       </div>
       {detail && (

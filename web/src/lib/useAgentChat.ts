@@ -65,7 +65,7 @@ export function useAgentChat(options: UseAgentChatOptions = {}) {
         timestamp: Date.now(),
         state: 'streaming',
         content: [{ kind: 'working' } as ChatContentPart],
-        agent: { id: 'ai-assistant', name: currentAgent, icon: '✨' },
+        agent: { id: 'ai-assistant', name: currentAgent, icon: { iconId: 'copilot' } },
       };
 
       setMessages((prev) => [...prev, userMsg, streamingResponse]);
@@ -132,7 +132,7 @@ export function useAgentChat(options: UseAgentChatOptions = {}) {
                 ? {
                     ...m,
                     content: contentParts,
-                    agent: { id: 'ai-assistant', name: currentAgent, icon: '✨' },
+                    agent: { id: 'ai-assistant', name: currentAgent, icon: { iconId: 'copilot' } },
                   } as ChatResponse
                 : m,
             ),
@@ -229,7 +229,7 @@ export function useAgentChat(options: UseAgentChatOptions = {}) {
                   state: 'complete',
                   completedAt: Date.now(),
                   content: finalParts,
-                  agent: { id: 'ai-assistant', name: currentAgent, icon: '✨' },
+                  agent: { id: 'ai-assistant', name: currentAgent, icon: { iconId: 'copilot' } },
                   elapsedMs: Date.now() - (m as ChatResponse).timestamp,
                 } as ChatResponse
               : m,

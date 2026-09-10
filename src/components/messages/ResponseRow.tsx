@@ -40,7 +40,7 @@ export const ResponseRow = memo(function ResponseRow({
     actions.cancelResponse(response.id);
   }, [response.id, actions]);
 
-  const agentIcon = response.agent?.icon ?? '🤖';
+  const agentIcon = response.agent?.icon ?? { iconId: 'copilot' };
   const agentName = response.agent?.name ?? 'Assistant';
   const isStreaming = response.state === 'streaming';
   const isComplete = response.state === 'complete' || response.state === 'failed';
@@ -59,7 +59,7 @@ export const ResponseRow = memo(function ResponseRow({
       data-testid="response-row"
     >
       <MessageHeader
-        avatar={typeof agentIcon === 'string' ? agentIcon : '🤖'}
+        avatar={agentIcon}
         username={agentName}
         actions={
           <>

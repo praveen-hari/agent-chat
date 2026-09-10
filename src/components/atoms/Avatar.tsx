@@ -6,6 +6,7 @@
 
 import { memo } from 'react';
 import { cn } from '../../utils/cn';
+import { Icon } from './Icon';
 
 export interface AvatarProps {
   /** Emoji string, URL, or icon identifier */
@@ -52,7 +53,7 @@ export const Avatar = memo(function Avatar({
         role="img"
         aria-label={name}
       >
-        <span className="ac-avatar__icon">{icon.iconId}</span>
+        <Icon name={icon.iconId} size={Math.round(size * 0.65)} />
       </div>
     );
   }

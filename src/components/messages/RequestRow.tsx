@@ -58,7 +58,7 @@ export const RequestRow = memo(function RequestRow({
       data-testid="request-row"
     >
       <MessageHeader
-        avatar="👤"
+        avatar={{ iconId: 'person' }}
         username="You"
         actions={
           <>

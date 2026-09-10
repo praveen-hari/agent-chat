@@ -53,8 +53,8 @@ describe('Avatar', () => {
   });
 
   test('renders iconId variant', () => {
-    render(<Avatar icon={{ iconId: 'copilot' }} name="Copilot" />);
-    expect(screen.getByText('copilot')).toBeInTheDocument();
+    const { container } = render(<Avatar icon={{ iconId: 'copilot' }} name="Copilot" />);
+    expect(container.querySelector('.codicon-copilot')).toBeInTheDocument();
   });
 
   test('applies custom className', () => {

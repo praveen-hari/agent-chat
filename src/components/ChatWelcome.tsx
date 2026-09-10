@@ -38,7 +38,7 @@ export const ChatWelcome = memo(function ChatWelcome({
         <div className="ac-welcome__icon">
           {activeAgent ? (
             <Avatar
-              icon={typeof activeAgent.icon === 'string' ? activeAgent.icon : '🤖'}
+              icon={activeAgent.icon ?? { iconId: 'copilot' }}
               name={activeAgent.name}
               size={48}
             />
