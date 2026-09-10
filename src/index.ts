@@ -246,3 +246,19 @@ export {
   truncate,
   formatToolStatus,
 } from './components/tool-parts/toolUtils';
+
+// ═══════════════════════════════════════════
+// MESSAGE LAYOUT COMPONENTS
+// ═══════════════════════════════════════════
+export { MessageHeader } from './components/messages/MessageHeader';
+export type { MessageHeaderProps } from './components/messages/MessageHeader';
+export { RequestRow } from './components/messages/RequestRow';
+export type { RequestRowProps } from './components/messages/RequestRow';
+export { ResponseRow } from './components/messages/ResponseRow';
+export type { ResponseRowProps } from './components/messages/ResponseRow';
+export { ResponseFooter } from './components/messages/ResponseFooter';
+export type { ResponseFooterProps } from './components/messages/ResponseFooter';
+export { AttachmentsRow } from './components/messages/AttachmentsRow';
+export type { AttachmentsRowProps } from './components/messages/AttachmentsRow';
+export { MessageList } from './components/messages/MessageList';
+export type { MessageListProps } from './components/messages/MessageList';
