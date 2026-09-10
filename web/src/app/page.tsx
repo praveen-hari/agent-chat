@@ -11,7 +11,7 @@
  * Everything flows through the library's standard interfaces.
  */
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { OpenAIAgentAdapter } from '@/lib/OpenAIAgentAdapter';
 
 // ─── ALL IMPORTS FROM @agent-chat/react LIBRARY ───
@@ -19,6 +19,7 @@ import {
   ChatProvider,
   AgentChat,
   darkTheme,
+  lightTheme,
   useAgentSession,
 } from '@agent-chat/react';
 
@@ -46,6 +47,18 @@ const SUGGESTIONS = [
 
 export default function DemoApp() {
   const [selectedModel, setSelectedModel] = useState('gpt-4.1-mini');
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
+  // Sync data-theme attribute on <html> for CSS variables
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  }, []);
+
+  const currentTheme = theme === 'dark' ? darkTheme : lightTheme;
 
   // ─── Create adapter (implements ChatAgentAdapter interface) ───
   const adapter = useMemo(() => {
@@ -84,7 +97,7 @@ export default function DemoApp() {
             New Chat
           </button>
 
-          <div style={{ padding: '16px 14px 8px', fontSize: 11, color: '#585b70', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div style={{ padding: '16px 14px 8px', fontSize: 11, color: 'var(--demo-section-label)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Features
           </div>
           {[
@@ -108,7 +121,7 @@ export default function DemoApp() {
               {!error ? '● Connected' : '✕ Error'}
             </span>
           </div>
-          <div style={{ fontSize: 10, color: '#45475a' }}>
+          <div style={{ fontSize: 10, color: 'var(--demo-footer-sub)' }}>
             OpenAI Agents SDK · ChatAgentAdapter
           </div>
         </div>
@@ -131,6 +144,14 @@ export default function DemoApp() {
             </select>
           </div>
           <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
+            <button
+              className="demo-theme-toggle"
+              onClick={toggleTheme}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+{theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             {isStreaming && (
               <span className="demo-badge demo-badge--yellow">
                 <i className="codicon codicon-loading ac-icon-spin" style={{ marginRight: 4 }} />
@@ -147,7 +168,7 @@ export default function DemoApp() {
         <div className="demo-chat-container">
           <ChatProvider
             session={session}
-            theme={darkTheme}
+            theme={currentTheme}
             onSendMessage={handleSendMessage}
             onCancelResponse={handleCancel}
             activeAgent={{ id: 'coding-agent', name: 'Coding Agent', icon: { iconId: 'copilot' } }}

@@ -185,22 +185,45 @@
   padding-top: var(--ac-space-xs);
 }
 
-/* ─── Progress Step ─── */
+/* ─── Progress Step (VS Code parity) ─── */
 .ac-progress-step {
   display: flex;
-  align-items: center;
-  gap: var(--ac-space-md);
-  padding: var(--ac-space-xxs) 0;
+  align-items: flex-start;
+  gap: 4px;
+  padding-top: 2px;
   font-size: var(--ac-font-size-sm);
+  color: var(--ac-fg-secondary);
+  font-variant-numeric: tabular-nums;
 }
 
 .ac-progress-step--active {
-  color: var(--ac-fg-primary);
+  color: var(--ac-fg-secondary);
+}
+
+/* Hide status icon when shimmer is active (VS Code behavior) */
+.ac-progress-step--active .ac-status-icon {
+  visibility: hidden;
+  width: 0;
+  overflow: hidden;
+}
+
+.ac-progress-step__icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--ac-fg-secondary);
 }
 
 .ac-progress-step__message {
   flex: 1;
   min-width: 0;
+  line-height: 1.4;
+}
+
+/* Inline code in progress messages */
+.ac-progress-step__message code {
+  font-family: var(--ac-font-family-mono);
+  font-size: var(--ac-font-size-xs);
 }
 
 /* ─── Working Indicator ─── */
@@ -675,19 +698,87 @@
 
 .ac-tool-progress__body {
   padding: var(--ac-space-md) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--ac-space-md);
 }
 
 .ac-tool-progress__section {
-  margin-bottom: var(--ac-space-md);
+  margin: 0;
 }
 
 .ac-tool-progress__section-label {
-  font-size: var(--ac-font-size-xs);
+  font-size: var(--ac-font-size-sm);
   font-weight: var(--ac-font-weight-bold);
-  color: var(--ac-fg-tertiary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: var(--ac-fg-secondary);
   margin-bottom: var(--ac-space-xs);
+}
+
+/* Input: compact JSON block */
+.ac-tool-progress__input-block {
+  position: relative;
+}
+
+.ac-tool-progress__input-code {
+  background: var(--ac-bg-code);
+  border: var(--ac-stroke-width) solid var(--ac-border-code);
+  border-radius: var(--ac-radius-sm);
+  padding: var(--ac-space-md) var(--ac-space-lg);
+  font-family: var(--ac-font-family-mono);
+  font-size: var(--ac-font-size-xs);
+  line-height: var(--ac-line-height-code);
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: var(--ac-fg-secondary);
+  margin: 0;
+}
+
+.ac-tool-progress__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: var(--ac-space-xxs);
+  background: none;
+  border: none;
+  color: var(--ac-fg-link);
+  font-size: var(--ac-font-size-xs);
+  cursor: pointer;
+  padding: 2px var(--ac-space-xs);
+  border-radius: var(--ac-radius-sm);
+}
+
+.ac-tool-progress__toggle:hover {
+  background: var(--ac-bg-hover);
+}
+
+/* Output: rendered as markdown */
+.ac-tool-progress__output {
+  font-size: var(--ac-font-size-sm);
+  color: var(--ac-fg-secondary);
+  line-height: 1.6;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--ac-space-xs) 0;
+}
+
+.ac-tool-progress__output p {
+  margin: 0 0 var(--ac-space-xs);
+}
+
+.ac-tool-progress__output p:last-child {
+  margin-bottom: 0;
+}
+
+.ac-tool-progress__output strong {
+  color: var(--ac-fg-primary);
+}
+
+.ac-tool-progress__output code {
+  background: var(--ac-bg-code);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 0.9em;
 }
 
 /* ─── Tool Confirmation Carousel ─── */

@@ -2,28 +2,30 @@
  * Shared keyframe animations used across multiple components.
  */
 
-/* ─── Shimmer gradient (thinking titles, progress messages) ─── */
+/* ─── Shimmer gradient (VS Code parity: thinking titles, progress messages) ─── */
 @keyframes ac-shimmer {
   0% {
-    background-position: -200% 0;
+    background-position: 100% 0;
   }
   100% {
-    background-position: 200% 0;
+    background-position: -100% 0;
   }
 }
 
 .ac-shimmer-text {
   background: linear-gradient(
     90deg,
-    var(--ac-fg-primary) 25%,
-    var(--ac-shimmer) 50%,
-    var(--ac-fg-primary) 75%
+    var(--ac-fg-secondary) 0%,
+    var(--ac-fg-secondary) 30%,
+    var(--ac-shimmer, rgba(255, 255, 255, 0.25)) 50%,
+    var(--ac-fg-secondary) 70%,
+    var(--ac-fg-secondary) 100%
   );
-  background-size: 200% 100%;
+  background-size: 400% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: ac-shimmer 2s infinite;
+  animation: ac-shimmer 2s linear infinite;
 }
 
 .ac-shimmer-text--inactive {

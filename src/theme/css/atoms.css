@@ -240,35 +240,101 @@
   color: var(--ac-fg-tertiary);
 }
 
-/* ─── Collapsible Section ─── */
+/* ─── Collapsible Section (VS Code parity) ─── */
 .ac-collapsible__header {
   display: flex;
   align-items: center;
-  gap: var(--ac-space-md);
-  padding: var(--ac-space-xs) 0;
+  gap: var(--ac-space-xs);
+  padding: 2px 6px 2px 2px;
   cursor: pointer;
   user-select: none;
   border-radius: var(--ac-radius-sm);
   transition: background var(--ac-transition-fast);
+  position: relative;
 }
 
 .ac-collapsible__header:hover {
   background: var(--ac-bg-hover);
 }
 
+/* Chevron: hidden by default on collapsibles, visible on hover */
+.ac-chevron {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--ac-font-size-xs);
+  transition: transform var(--ac-transition-fast);
+  flex-shrink: 0;
+  width: 16px;
+  justify-content: center;
+}
+
+.ac-chevron--open {
+  transform: rotate(90deg);
+}
+
+/* Hover chevron: VS Code shows chevron only on hover for collapsible tools */
+.ac-collapsible--hoverable .ac-chevron {
+  opacity: 0;
+  transition: opacity var(--ac-transition-fast);
+}
+
+.ac-collapsible--hoverable:hover .ac-chevron,
+.ac-collapsible--hoverable:focus-within .ac-chevron,
+.ac-collapsible--hoverable.ac-collapsible--open .ac-chevron {
+  opacity: 1;
+}
+
+.ac-collapsible__status {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ac-collapsible__status--complete {
+  color: var(--ac-success);
+}
+
+.ac-collapsible__icon {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--ac-fg-secondary);
+}
+
 .ac-collapsible__title {
   font-size: var(--ac-font-size-sm);
-  font-weight: var(--ac-font-weight-bold);
   flex: 1;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: var(--ac-fg-secondary);
+}
+
+/* Inline code in titles (VS Code uses smaller font for backtick content) */
+.ac-collapsible__title code,
+.ac-progress-step__message code {
+  font-family: var(--ac-font-family-mono);
+  font-size: var(--ac-font-size-xs);
+  background: var(--ac-bg-code);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.ac-collapsible__count {
+  font-size: var(--ac-font-size-xs);
+  color: var(--ac-fg-tertiary);
+  background: var(--ac-bg-status);
+  padding: 0 6px;
+  border-radius: 10px;
+  min-width: 18px;
+  text-align: center;
 }
 
 .ac-collapsible__subtitle {
   font-size: var(--ac-font-size-xs);
   color: var(--ac-fg-tertiary);
+  flex-shrink: 0;
 }
 
 .ac-collapsible__actions {

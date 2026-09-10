@@ -11,6 +11,20 @@ import { Icon } from '../atoms/Icon';
 import { StatusIcon } from '../atoms/StatusIcon';
 import { ShimmerText } from '../atoms/ShimmerText';
 
+/**
+ * Render inline markdown: converts `backtick` text to <code> elements.
+ * This avoids needing full react-markdown for single-line progress messages.
+ */
+function renderInlineMarkdown(text: string): React.ReactNode[] {
+  const parts = text.split(/(`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return <code key={i}>{part.slice(1, -1)}</code>;
+    }
+    return part;
+  });
+}
+
 export interface ProgressStepProps extends ProgressPart {
   /** Additional CSS class */
   className?: string;
@@ -36,7 +50,11 @@ export const ProgressStep = memo(function ProgressStep({
         </span>
       )}
       <span className="ac-progress-step__message">
-        {shimmer && isActive ? <ShimmerText text={message} mode={shimmerMode} /> : message}
+        {shimmer && isActive ? (
+          <ShimmerText text={message} mode={shimmerMode} />
+        ) : (
+          renderInlineMarkdown(message)
+        )}
       </span>
     </div>
   );

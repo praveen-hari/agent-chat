@@ -48,7 +48,7 @@ describe('ToolCallDisplay', () => {
         isStreaming={false}
       />,
     );
-    expect(screen.getByTestId('tool-progress')).toBeInTheDocument();
+    expect(screen.getByTestId('progress-step')).toBeInTheDocument();
   });
 
   test('renders terminal tool as terminal display when running', () => {
@@ -65,7 +65,7 @@ describe('ToolCallDisplay', () => {
     expect(screen.getByTestId('terminal-tool-display')).toBeInTheDocument();
   });
 
-  test('renders complete state as progress', () => {
+  test('renders complete state as single-line progress step', () => {
     renderWithChat(
       <ToolCallDisplay
         kind="tool-call"
@@ -77,7 +77,7 @@ describe('ToolCallDisplay', () => {
         isStreaming={false}
       />,
     );
-    expect(screen.getByTestId('tool-progress')).toBeInTheDocument();
+    expect(screen.getByTestId('progress-step')).toBeInTheDocument();
   });
 
   test('renders MCP app when mcpApp is provided', () => {
@@ -94,7 +94,7 @@ describe('ToolCallDisplay', () => {
     expect(screen.getByTestId('mcp-app-display')).toBeInTheDocument();
   });
 
-  test('renders failed state as progress with failed status', () => {
+  test('renders failed state as progress step', () => {
     renderWithChat(
       <ToolCallDisplay
         kind="tool-call"
@@ -105,6 +105,6 @@ describe('ToolCallDisplay', () => {
         isStreaming={false}
       />,
     );
-    expect(screen.getByTestId('tool-progress')).toBeInTheDocument();
+    expect(screen.getByTestId('progress-step')).toBeInTheDocument();
   });
 });
