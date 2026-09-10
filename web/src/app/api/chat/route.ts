@@ -223,8 +223,20 @@ export async function POST(req: Request) {
   const { message, history, model: modelId } = await req.json();
   const agent = createAgent(modelId || 'gpt-4.1-mini');
 
+  // Normalize history for OpenAI Agents SDK
+  // Assistant messages need content as array of output blocks, not plain string
+  const normalizedHistory = (history || []).map((msg: { role: string; content: string }) => {
+    if (msg.role === 'assistant') {
+      return {
+        role: 'assistant' as const,
+        content: [{ type: 'output_text' as const, text: msg.content }],
+      };
+    }
+    return { role: msg.role as 'user', content: msg.content };
+  });
+
   const input = [
-    ...(history || []),
+    ...normalizedHistory,
     { role: 'user' as const, content: message },
   ];
 
