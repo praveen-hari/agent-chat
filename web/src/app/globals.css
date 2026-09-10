@@ -1,0 +1,241 @@
+/* Global styles for the demo app */
+
+:root {
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, sans-serif;
+  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: var(--font-sans);
+  background: #1e1e2e;
+  color: #cdd6f4;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Demo Layout ─── */
+.demo-layout {
+  display: flex;
+  height: 100vh;
+}
+
+.demo-sidebar {
+  width: 260px;
+  background: #181825;
+  border-right: 1px solid #313244;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.demo-sidebar__header {
+  padding: 20px;
+  border-bottom: 1px solid #313244;
+}
+
+.demo-sidebar__title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #cba6f7;
+}
+
+.demo-sidebar__subtitle {
+  font-size: 11px;
+  color: #6c7086;
+  margin-top: 4px;
+}
+
+.demo-sidebar__nav {
+  flex: 1;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.demo-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #a6adc8;
+  text-decoration: none;
+  font-size: 13px;
+  transition: background 0.15s, color 0.15s;
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.demo-nav-item:hover {
+  background: #313244;
+  color: #cdd6f4;
+}
+
+.demo-nav-item--active {
+  background: #313244;
+  color: #cba6f7;
+}
+
+.demo-nav-item__icon {
+  font-size: 16px;
+}
+
+.demo-sidebar__footer {
+  padding: 16px 20px;
+  border-top: 1px solid #313244;
+  font-size: 11px;
+  color: #585b70;
+}
+
+.demo-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Settings Panel ─── */
+.demo-settings {
+  padding: 16px 20px;
+  background: #181825;
+  border-bottom: 1px solid #313244;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 13px;
+}
+
+.demo-settings__label {
+  color: #6c7086;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.demo-settings__input {
+  background: #313244;
+  border: 1px solid #45475a;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #cdd6f4;
+  font-size: 13px;
+  width: 300px;
+}
+
+.demo-settings__input:focus {
+  outline: none;
+  border-color: #cba6f7;
+}
+
+.demo-settings__select {
+  background: #313244;
+  border: 1px solid #45475a;
+  border-radius: 6px;
+  padding: 6px 12px;
+  color: #cdd6f4;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.demo-badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.demo-badge--green {
+  background: rgba(166, 227, 161, 0.15);
+  color: #a6e3a1;
+}
+
+.demo-badge--yellow {
+  background: rgba(249, 226, 175, 0.15);
+  color: #f9e2af;
+}
+
+.demo-badge--red {
+  background: rgba(243, 139, 168, 0.15);
+  color: #f38ba8;
+}
+
+/* ─── Chat Container ─── */
+.demo-chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ─── Welcome Page ─── */
+.demo-home {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px;
+}
+
+.demo-home__icon {
+  font-size: 64px;
+  margin-bottom: 24px;
+}
+
+.demo-home__title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.demo-home__desc {
+  color: #a6adc8;
+  max-width: 500px;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.demo-home__features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 500px;
+}
+
+.demo-feature-card {
+  background: #181825;
+  border: 1px solid #313244;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: left;
+}
+
+.demo-feature-card__icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+}
+
+.demo-feature-card__title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.demo-feature-card__desc {
+  font-size: 11px;
+  color: #6c7086;
+  line-height: 1.5;
+}

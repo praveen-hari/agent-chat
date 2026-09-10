@@ -40,3 +40,8 @@ playwright-report/
 
 # Temp
 *.tsbuildinfo
+
+# Web demo app
+web/node_modules/
+web/.next/
+web/.env.local
