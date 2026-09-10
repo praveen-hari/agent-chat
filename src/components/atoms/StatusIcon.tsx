@@ -1,5 +1,6 @@
 /**
- * Reusable status indicator icon used across multiple components.
+ * StatusIcon — reusable status indicator icon.
+ * Used across ProgressStep, ToolCallDisplay, TodoList, ThinkingBlock.
  *
  * @module components/atoms/StatusIcon
  */
@@ -15,56 +16,42 @@ export interface StatusIconProps {
   status: StatusIconStatus;
   /** Size in pixels (default: 16) */
   size?: number;
-  /** Whether to animate (spin the running spinner) */
+  /** Whether to animate (spin) — auto-enabled for 'running' */
   animate?: boolean;
-  /** Accessible label override (default: status-specific text) */
-  label?: string;
   /** Additional CSS class */
   className?: string;
 }
 
-/** Mapping of status to visual icon and accessible label */
-const STATUS_MAP: Record<StatusIconStatus, { icon: string; label: string }> = {
-  running: { icon: '◌', label: 'In progress' },
-  complete: { icon: '✓', label: 'Complete' },
-  failed: { icon: '✕', label: 'Failed' },
-  cancelled: { icon: '●', label: 'Cancelled' },
-  pending: { icon: '○', label: 'Pending' },
-  warning: { icon: '⚠', label: 'Warning' },
-  info: { icon: 'ℹ', label: 'Information' },
+const STATUS_ICONS: Record<StatusIconStatus, string> = {
+  running: '⟳',
+  complete: '✓',
+  failed: '✕',
+  cancelled: '○',
+  pending: '◯',
+  warning: '⚠',
+  info: 'ℹ',
 };
 
-/**
- * Renders a status indicator icon with appropriate color and animation.
- *
- * @example
- * ```tsx
- * <StatusIcon status="running" />
- * <StatusIcon status="complete" />
- * <StatusIcon status="failed" size={20} />
- * ```
- */
 export const StatusIcon = memo(function StatusIcon({
   status,
   size = 16,
-  animate = true,
-  label,
+  animate,
   className,
 }: StatusIconProps) {
-  const { icon, label: defaultLabel } = STATUS_MAP[status];
-  const accessibleLabel = label ?? defaultLabel;
+  const shouldAnimate = animate ?? status === 'running';
 
   return (
     <span
-      className={cn('ac-status-icon', `ac-status-icon--${status}`, className)}
-      role="img"
-      aria-label={accessibleLabel}
-      style={{ width: size, height: size, fontSize: size }}
+      className={cn(
+        'ac-status-icon',
+        `ac-status-icon--${status}`,
+        shouldAnimate && 'ac-spinner',
+        className,
+      )}
+      style={{ width: `${size}px`, height: `${size}px`, fontSize: `${size}px` }}
+      aria-hidden="true"
     >
-      {/* Spinner rotates when running and animate is enabled */}
-      <span className={cn(status === 'running' && animate && 'ac-spinner')} aria-hidden="true">
-        {icon}
-      </span>
+      {STATUS_ICONS[status]}
     </span>
   );
 });

@@ -1,74 +1,52 @@
 /**
- * Risk level indicator for tool confirmations.
+ * RiskBadge — risk level indicator for tool confirmations.
  *
  * @module components/atoms/RiskBadge
  */
 
 import { memo } from 'react';
-import { cn } from '../../utils/cn';
 import type { RiskLevel } from '../../types/content-parts';
-import { PixelSpinner } from './PixelSpinner';
+import { cn } from '../../utils/cn';
 
 export interface RiskBadgeProps {
   /** Risk level */
   level: RiskLevel;
-  /** Whether to show detail text (e.g., "Low risk") */
+  /** Whether to show detail text */
   showText?: boolean;
-  /** Additional detail shown on hover */
+  /** Additional detail on hover */
   detail?: string;
   /** Additional CSS class */
   className?: string;
 }
 
-/** Mapping of risk level to icon and display text */
-const RISK_MAP: Record<Exclude<RiskLevel, 'assessing'>, { icon: string; text: string }> = {
-  low: { icon: '✓', text: 'Low risk' },
-  medium: { icon: '⚠', text: 'Medium risk' },
-  high: { icon: '✕', text: 'High risk' },
+const RISK_CONFIG: Record<RiskLevel, { icon: string; label: string }> = {
+  assessing: { icon: '⟳', label: 'Assessing risk…' },
+  low: { icon: '✓', label: 'Low risk' },
+  medium: { icon: '⚠', label: 'Medium risk' },
+  high: { icon: '✕', label: 'High risk' },
 };
 
-/**
- * Renders a risk level badge with color coding:
- * - `assessing` → spinner + "Assessing risk..."
- * - `low` → green check
- * - `medium` → orange warning
- * - `high` → red error
- *
- * @example
- * ```tsx
- * <RiskBadge level="low" showText />
- * <RiskBadge level="assessing" />
- * <RiskBadge level="high" showText detail="Deletes production data" />
- * ```
- */
 export const RiskBadge = memo(function RiskBadge({
   level,
   showText = false,
   detail,
   className,
 }: RiskBadgeProps) {
-  const baseProps = {
-    className: cn('ac-risk-badge', `ac-risk-badge--${level}`, className),
-    'aria-label': detail ?? `${level} risk`,
-  };
-
-  if (level === 'assessing') {
-    return (
-      <span {...baseProps}>
-        <PixelSpinner size={12} label="Assessing risk" />
-        {showText && <span>Assessing risk…</span>}
-      </span>
-    );
-  }
-
-  const { icon, text } = RISK_MAP[level];
+  const config = RISK_CONFIG[level];
 
   return (
-    <span {...baseProps} title={detail} role="img">
-      <span className="ac-risk-badge__icon" aria-hidden="true">
-        {icon}
+    <span
+      className={cn('ac-risk-badge', `ac-risk-badge--${level}`, className)}
+      title={detail ?? config.label}
+      aria-label={config.label}
+    >
+      <span
+        className={cn('ac-risk-badge__icon', level === 'assessing' && 'ac-spinner')}
+        aria-hidden="true"
+      >
+        {config.icon}
       </span>
-      {showText && <span className="ac-risk-badge__text">{text}</span>}
+      {showText && <span className="ac-risk-badge__text">{config.label}</span>}
     </span>
   );
 });

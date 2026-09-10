@@ -1,5 +1,5 @@
 /**
- * Notification-style count or text badge.
+ * Badge — notification-style count or text badge.
  *
  * @module components/atoms/Badge
  */
@@ -14,22 +14,12 @@ export interface BadgeProps {
   text?: string;
   /** Color variant */
   variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
-  /** Whether to hide when count is zero */
+  /** Hide badge when count is 0 (default: false) */
   hideZero?: boolean;
   /** Additional CSS class */
   className?: string;
 }
 
-/**
- * Renders a small rounded badge showing a count or text.
- *
- * @example
- * ```tsx
- * <Badge count={3} />
- * <Badge text="Outdated" variant="warning" />
- * <Badge count={0} hideZero /> // renders nothing
- * ```
- */
 export const Badge = memo(function Badge({
   count,
   text,
@@ -37,16 +27,18 @@ export const Badge = memo(function Badge({
   hideZero = false,
   className,
 }: BadgeProps) {
-  const display = text ?? (count !== undefined ? String(count) : '');
-
-  if (hideZero && count === 0) {
+  // Hide when count is 0 and hideZero is enabled
+  if (hideZero && count === 0 && !text) {
     return null;
   }
+
+  const display = text ?? String(count ?? 0);
+  const ariaLabel = text ?? `${count ?? 0} items`;
 
   return (
     <span
       className={cn('ac-badge', variant !== 'default' && `ac-badge--${variant}`, className)}
-      aria-label={text ? text : `${count} items`}
+      aria-label={ariaLabel}
     >
       {display}
     </span>

@@ -1,14 +1,14 @@
 /**
- * Displays a user or agent avatar as a rounded icon/image/initials circle.
+ * Avatar — displays a user or agent avatar as a rounded icon/image/initials circle.
  *
  * @module components/atoms/Avatar
  */
 
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { cn } from '../../utils/cn';
 
 export interface AvatarProps {
-  /** Emoji string, image source object, or icon identifier object */
+  /** Emoji string, URL, or icon identifier */
   icon: string | { src: string } | { iconId: string };
   /** Display name (used for initials fallback and alt text) */
   name?: string;
@@ -20,15 +20,6 @@ export interface AvatarProps {
   className?: string;
 }
 
-/**
- * Renders an avatar — emoji, image, icon ID, or initials fallback.
- *
- * @example
- * ```tsx
- * <Avatar icon="🤖" name="Bot" />
- * <Avatar icon={{ src: '/avatar.png' }} name="User" />
- * ```
- */
 export const Avatar = memo(function Avatar({
   icon,
   name,
@@ -36,45 +27,60 @@ export const Avatar = memo(function Avatar({
   outline = false,
   className,
 }: AvatarProps) {
-  const [imgFailed, setImgFailed] = useState(false);
+  const style = { width: `${size}px`, height: `${size}px` };
 
-  const showImage = typeof icon === 'object' && 'src' in icon && !imgFailed;
-  const showIconId = typeof icon === 'object' && 'iconId' in icon;
-  const showEmoji = typeof icon === 'string' && icon.length > 0 && icon.length <= 2;
-  const showInitials =
-    !showImage &&
-    !showIconId &&
-    (typeof icon !== 'string' || icon.length === 0 || icon.length > 2 || imgFailed);
+  // Image URL
+  if (typeof icon === 'object' && 'src' in icon) {
+    return (
+      <div
+        className={cn('ac-avatar', outline && 'ac-avatar--outline', className)}
+        style={style}
+        role="img"
+        aria-label={name}
+      >
+        <img className="ac-avatar__img" src={icon.src} alt={name ?? ''} />
+      </div>
+    );
+  }
 
-  const initials = (name?.trim()?.[0] ?? '?').toUpperCase();
+  // Icon ID (render as text for now; can be replaced with icon library)
+  if (typeof icon === 'object' && 'iconId' in icon) {
+    return (
+      <div
+        className={cn('ac-avatar', outline && 'ac-avatar--outline', className)}
+        style={style}
+        role="img"
+        aria-label={name}
+      >
+        <span className="ac-avatar__icon">{icon.iconId}</span>
+      </div>
+    );
+  }
 
-  // When rendering an image, the <img> element itself is the accessible
-  // element — the wrapper must not duplicate role="img".
-  const wrapperRole = showImage ? undefined : 'img';
+  // Emoji string (1-2 chars)
+  if (typeof icon === 'string' && icon.length > 0) {
+    return (
+      <div
+        className={cn('ac-avatar', outline && 'ac-avatar--outline', className)}
+        style={style}
+        role="img"
+        aria-label={name}
+      >
+        <span className="ac-avatar__emoji">{icon}</span>
+      </div>
+    );
+  }
 
+  // Fallback: initials from name
+  const initials = name ? name.charAt(0).toUpperCase() : '?';
   return (
-    <span
+    <div
       className={cn('ac-avatar', outline && 'ac-avatar--outline', className)}
-      role={wrapperRole}
+      style={style}
+      role="img"
       aria-label={name}
-      style={{ width: size, height: size }}
     >
-      {showImage && (
-        <img
-          className="ac-avatar__img"
-          src={(icon as { src: string }).src}
-          alt={name ?? ''}
-          onError={() => setImgFailed(true)}
-        />
-      )}
-      {showIconId && (
-        <span className="ac-avatar__icon-id" aria-hidden="true">
-          {(icon as { iconId: string }).iconId}
-        </span>
-      )}
-      {showEmoji && !showInitials && <span aria-hidden="true">{icon}</span>}
-      {showInitials && name && <span className="ac-avatar__initials">{initials}</span>}
-      {showInitials && !name && <span className="ac-avatar__initials">?</span>}
-    </span>
+      <span className="ac-avatar__initials">{initials}</span>
+    </div>
   );
 });

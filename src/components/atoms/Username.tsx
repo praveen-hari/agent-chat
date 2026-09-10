@@ -1,5 +1,5 @@
 /**
- * Displays a username with bold heading style.
+ * Username — displays a styled name label.
  *
  * @module components/atoms/Username
  */
@@ -16,14 +16,6 @@ export interface UsernameProps {
   className?: string;
 }
 
-/**
- * Renders a username as a bold span.
- *
- * @example
- * ```tsx
- * <Username name="Copilot" />
- * ```
- */
 export const Username = memo(function Username({
   name,
   variant = 'default',

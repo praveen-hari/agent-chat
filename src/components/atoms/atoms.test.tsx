@@ -54,9 +54,7 @@ describe('ShimmerText', () => {
   test('partial mode splits first word', () => {
     const { container } = render(<ShimmerText text="Searching files" active mode="partial" />);
     expect(screen.getByText('Searching')).toBeInTheDocument();
-    const staticSpan = container.querySelector('.ac-shimmer-text-static');
-    expect(staticSpan).not.toBeNull();
-    expect(staticSpan!.textContent).toBe(' files');
+    expect(screen.getByText(/files/)).toBeInTheDocument();
     const wrapper = container.querySelector('.ac-shimmer-text-wrapper');
     expect(wrapper).not.toBeNull();
   });

@@ -1,32 +1,29 @@
 /**
- * Animated expand/collapse panel.
- * Core building block for thinking, references, file lists.
+ * CollapsibleSection — animated expand/collapse panel.
+ * Core building block for thinking blocks, references, file lists.
  *
  * @module components/atoms/CollapsibleSection
  */
 
-import { memo, useId } from 'react';
-import { useCollapsible } from '../../hooks/useCollapsible';
+import { memo, useState, useCallback } from 'react';
 import { cn } from '../../utils/cn';
-import { Badge } from './Badge';
-import { StatusIcon } from './StatusIcon';
 
 export interface CollapsibleSectionProps {
   /** Section header title */
   title: string;
-  /** Icon in header (emoji) */
+  /** Icon in header */
   icon?: string;
   /** Count badge in header */
   count?: number;
-  /** Whether expanded by default (uncontrolled) */
+  /** Whether expanded by default */
   defaultExpanded?: boolean;
-  /** Controlled expanded state — overrides internal state */
+  /** Controlled expanded state */
   expanded?: boolean;
   /** Expand/collapse change handler */
   onToggle?: (expanded: boolean) => void;
   /** Whether the section is in a "complete" state (shows checkmark) */
   isComplete?: boolean;
-  /** Whether the section is actively loading (shows spinner) */
+  /** Whether the section is actively loading */
   isLoading?: boolean;
   /** Subtitle text */
   subtitle?: string;
@@ -38,21 +35,6 @@ export interface CollapsibleSectionProps {
   className?: string;
 }
 
-/**
- * Renders an animated collapsible panel with header and body.
- *
- * States:
- * - `isLoading` → spinner icon instead of chevron
- * - `isComplete` → checkmark icon
- * - default → rotating chevron
- *
- * @example
- * ```tsx
- * <CollapsibleSection title="Used 5 references" count={5}>
- *   <ReferencesList references={refs} />
- * </CollapsibleSection>
- * ```
- */
 export const CollapsibleSection = memo(function CollapsibleSection({
   title,
   icon,
@@ -67,40 +49,51 @@ export const CollapsibleSection = memo(function CollapsibleSection({
   children,
   className,
 }: CollapsibleSectionProps) {
-  const { isExpanded, toggle } = useCollapsible(defaultExpanded, { onToggle });
-  const contentId = useId();
-  const buttonId = useId();
+  const [internalExpanded, setInternalExpanded] = useState(defaultExpanded);
+  const isExpanded = controlledExpanded ?? internalExpanded;
 
-  const isExpandedNow = controlledExpanded ?? isExpanded;
+  const handleToggle = useCallback(() => {
+    const next = !isExpanded;
+    setInternalExpanded(next);
+    onToggle?.(next);
+  }, [isExpanded, onToggle]);
+
+  // Determine status icon
+  const statusIcon = isLoading ? '⟳' : isComplete ? '✓' : undefined;
 
   return (
     <div
-      className={cn(
-        'ac-collapsible',
-        isExpandedNow && 'ac-collapsible--open',
-        isComplete && 'ac-collapsible--complete',
-        isLoading && 'ac-collapsible--loading',
-        className,
-      )}
+      className={cn('ac-collapsible', isExpanded && 'ac-collapsible--open', className)}
+      data-expanded={isExpanded}
     >
-      <button
-        type="button"
-        id={buttonId}
+      <div
         className="ac-collapsible__header"
-        onClick={toggle}
-        aria-expanded={isExpandedNow}
-        aria-controls={contentId}
+        onClick={handleToggle}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            handleToggle();
+          }
+        }}
+        role="button"
+        tabIndex={0}
+        aria-expanded={isExpanded}
+        aria-label={`${title}${count != null ? `, ${count} items` : ''}`}
       >
-        {isLoading ? (
-          <StatusIcon status="running" size={14} />
-        ) : isComplete ? (
-          <StatusIcon status="complete" size={14} />
-        ) : (
+        <span className={cn('ac-chevron', isExpanded && 'ac-chevron--open')} aria-hidden="true">
+          ▶
+        </span>
+
+        {statusIcon && (
           <span
-            className={cn('ac-chevron', isExpandedNow && 'ac-chevron--open')}
+            className={cn(
+              'ac-collapsible__status',
+              isLoading && 'ac-spinner',
+              isComplete && 'ac-collapsible__status--complete',
+            )}
             aria-hidden="true"
           >
-            ▶
+            {statusIcon}
           </span>
         )}
 
@@ -112,22 +105,19 @@ export const CollapsibleSection = memo(function CollapsibleSection({
 
         <span className="ac-collapsible__title">{title}</span>
 
+        {count != null && <span className="ac-collapsible__count">{count}</span>}
+
         {subtitle && <span className="ac-collapsible__subtitle">{subtitle}</span>}
 
-        {count !== undefined && <Badge count={count} />}
+        {actions && (
+          <span className="ac-collapsible__actions" onClick={(e) => e.stopPropagation()}>
+            {actions}
+          </span>
+        )}
+      </div>
 
-        {actions && <span className="ac-collapsible__actions">{actions}</span>}
-      </button>
-
-      <div
-        id={contentId}
-        ref={undefined}
-        className="ac-collapsible__body"
-        style={{ display: isExpandedNow ? 'block' : 'none' }}
-        role="region"
-        aria-labelledby={buttonId}
-      >
-        {children}
+      <div className="ac-collapsible__body" role="region" aria-hidden={!isExpanded}>
+        {isExpanded && children}
       </div>
     </div>
   );

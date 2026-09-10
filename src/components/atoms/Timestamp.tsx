@@ -1,11 +1,10 @@
 /**
- * Displays relative or absolute time with live updates.
+ * Timestamp — displays relative or absolute time with tooltip.
  *
  * @module components/atoms/Timestamp
  */
 
 import { memo } from 'react';
-import { useRelativeTime, formatAbsoluteTime } from '../../hooks/useRelativeTime';
 import { cn } from '../../utils/cn';
 
 export interface TimestampProps {
@@ -17,34 +16,53 @@ export interface TimestampProps {
   className?: string;
 }
 
-/**
- * Renders a timestamp — relative ("2m ago"), absolute, or both.
- * Relative times update automatically as time passes.
- * Tooltip shows the absolute time on hover.
- *
- * @example
- * ```tsx
- * <Timestamp time={message.timestamp} />
- * ```
- */
+function formatRelativeTime(timestamp: number): string {
+  const now = Date.now();
+  const diff = now - timestamp;
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
+
+  if (seconds < 10) return 'Just now';
+  if (seconds < 60) return `${seconds}s ago`;
+  if (minutes < 60) return `${minutes}m ago`;
+  if (hours < 24) return `${hours}h ago`;
+  if (days < 2) return 'Yesterday';
+  if (days < 7) return `${days} days ago`;
+
+  const date = new Date(timestamp);
+  const currentYear = new Date().getFullYear();
+  const month = date.toLocaleString('en-US', { month: 'short' });
+  const day = date.getDate();
+  return date.getFullYear() === currentYear
+    ? `${month} ${day}`
+    : `${month} ${day}, ${date.getFullYear()}`;
+}
+
+function formatAbsoluteTime(timestamp: number): string {
+  return new Date(timestamp).toLocaleString();
+}
+
 export const Timestamp = memo(function Timestamp({
   time,
   format = 'relative',
   className,
 }: TimestampProps) {
-  const relative = useRelativeTime(time);
-  const absolute = formatAbsoluteTime(time);
+  const absoluteStr = formatAbsoluteTime(time);
+  const relativeStr = formatRelativeTime(time);
 
-  const display =
-    format === 'relative'
-      ? relative
-      : format === 'absolute'
-        ? absolute
-        : `${relative} (${absolute})`;
+  const display = format === 'absolute' ? absoluteStr : relativeStr;
+  const tooltip = format === 'relative' ? absoluteStr : undefined;
 
   return (
-    <time className={cn('ac-timestamp', className)} dateTime={new Date(time).toISOString()}>
-      <span title={absolute}>{display}</span>
+    <time
+      className={cn('ac-timestamp', className)}
+      dateTime={new Date(time).toISOString()}
+      title={tooltip}
+    >
+      {display}
+      {format === 'both' && <span className="ac-timestamp__absolute"> ({absoluteStr})</span>}
     </time>
   );
 });

@@ -122,12 +122,6 @@ export { useChatActions } from './provider/useChatActions';
 export type { ChatContextValue } from './provider/ChatContext';
 
 // ═══════════════════════════════════════════
-// HOOKS
-// ═══════════════════════════════════════════
-export { useRelativeTime, formatAbsoluteTime } from './hooks/useRelativeTime';
-export { useCollapsible } from './hooks/useCollapsible';
-
-// ═══════════════════════════════════════════
 // ATOM COMPONENTS
 // ═══════════════════════════════════════════
 export { Avatar } from './components/atoms/Avatar';

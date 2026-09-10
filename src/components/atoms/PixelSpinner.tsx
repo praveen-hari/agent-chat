@@ -1,6 +1,6 @@
 /**
- * Small pixel-art-style loading spinner.
- * Matches VS Code's createPixelSpinner() aesthetic.
+ * PixelSpinner — small pixel-art-style loading spinner.
+ * Matches VS Code's createPixelSpinner() pattern.
  *
  * @module components/atoms/PixelSpinner
  */
@@ -11,21 +11,12 @@ import { cn } from '../../utils/cn';
 export interface PixelSpinnerProps {
   /** Size in pixels (default: 14) */
   size?: number;
-  /** Accessible label for screen readers */
+  /** Accessible label (default: 'Loading') */
   label?: string;
   /** Additional CSS class */
   className?: string;
 }
 
-/**
- * Renders a rotating pixel spinner for loading states.
- *
- * @example
- * ```tsx
- * <PixelSpinner />
- * <PixelSpinner size={12} label="Loading servers" />
- * ```
- */
 export const PixelSpinner = memo(function PixelSpinner({
   size = 14,
   label = 'Loading',
@@ -33,12 +24,17 @@ export const PixelSpinner = memo(function PixelSpinner({
 }: PixelSpinnerProps) {
   return (
     <span
-      className={cn('ac-pixel-spinner', className)}
+      className={cn('ac-pixel-spinner', 'ac-spinner', className)}
+      style={{ width: `${size}px`, height: `${size}px` }}
       role="status"
       aria-label={label}
-      style={{ width: size, height: size }}
     >
-      <span className="ac-pixel-spinner__square ac-spinner" aria-hidden="true" />
+      <svg viewBox="0 0 16 16" width={size} height={size} fill="currentColor">
+        <rect x="7" y="1" width="2" height="4" rx="1" opacity="0.9" />
+        <rect x="7" y="11" width="2" height="4" rx="1" opacity="0.3" />
+        <rect x="1" y="7" width="4" height="2" rx="1" opacity="0.5" />
+        <rect x="11" y="7" width="4" height="2" rx="1" opacity="0.7" />
+      </svg>
     </span>
   );
 });
