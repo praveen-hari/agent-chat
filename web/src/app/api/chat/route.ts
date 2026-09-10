@@ -273,18 +273,34 @@ export async function POST(req: Request) {
             const item = event.item as unknown as Record<string, unknown>;
 
             if (event.name === 'tool_called') {
+              // Extract tool name from RunItem — could be in .name, .toolName, or nested
+              const toolName = (item.name as string)
+                || (item.toolName as string)
+                || (item.rawItem as Record<string, unknown>)?.name as string
+                || (item.rawItem as Record<string, unknown>)?.function_name as string
+                || String(item.type || 'tool');
+              const callId = (item.callId as string)
+                || (item.rawItem as Record<string, unknown>)?.call_id as string
+                || `tc-${Date.now()}`;
+
+              // Log for debugging
+              console.log('[tool_called]', JSON.stringify(item, null, 2).slice(0, 500));
+
               send({
                 type: 'tool-call-start',
-                toolCallId: (item.callId as string) || `tc-${Date.now()}`,
-                toolId: (item.name as string) || 'unknown',
+                toolCallId: callId,
+                toolId: toolName,
                 input: item.arguments,
               });
             }
 
             if (event.name === 'tool_output') {
+              const callId = (item.callId as string)
+                || (item.rawItem as Record<string, unknown>)?.call_id as string
+                || '';
               send({
                 type: 'tool-call-end',
-                toolCallId: (item.callId as string) || '',
+                toolCallId: callId,
                 output: typeof item.output === 'string' ? item.output : JSON.stringify(item.output),
                 success: true,
               });

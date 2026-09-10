@@ -34,7 +34,8 @@ export const ToolStreaming = memo(function ToolStreaming({
     <div className={cn('ac-tool-streaming', className)} data-testid="tool-streaming">
       <ProgressStep
         kind="progress"
-        message={`${resolvedIcon} ${progressMessage ?? `Preparing ${toolId}…`}`}
+        message={progressMessage ?? `Preparing ${toolId}…`}
+        icon={resolvedIcon}
         isActive
         shimmer
       />

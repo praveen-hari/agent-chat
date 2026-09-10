@@ -99,7 +99,7 @@ export const CollapsibleSection = memo(function CollapsibleSection({
 
         {icon && (
           <span className="ac-collapsible__icon" aria-hidden="true">
-            {icon}
+            {/^[a-z]/.test(icon) ? <Icon name={icon} /> : icon}
           </span>
         )}
 

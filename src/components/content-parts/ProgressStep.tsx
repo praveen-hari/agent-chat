@@ -7,6 +7,7 @@
 import { memo } from 'react';
 import type { ProgressPart } from '../../types/content-parts';
 import { cn } from '../../utils/cn';
+import { Icon } from '../atoms/Icon';
 import { StatusIcon } from '../atoms/StatusIcon';
 import { ShimmerText } from '../atoms/ShimmerText';
 
@@ -18,6 +19,7 @@ export interface ProgressStepProps extends ProgressPart {
 export const ProgressStep = memo(function ProgressStep({
   message,
   isActive,
+  icon,
   shimmer = false,
   shimmerMode = 'full',
   className,
@@ -28,6 +30,11 @@ export const ProgressStep = memo(function ProgressStep({
       data-testid="progress-step"
     >
       <StatusIcon status={isActive ? 'running' : 'complete'} size={14} />
+      {icon && (
+        <span className="ac-progress-step__icon" aria-hidden="true">
+          {/^[a-z]/.test(icon) ? <Icon name={icon} size={14} /> : icon}
+        </span>
+      )}
       <span className="ac-progress-step__message">
         {shimmer && isActive ? <ShimmerText text={message} mode={shimmerMode} /> : message}
       </span>

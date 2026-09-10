@@ -61,7 +61,8 @@ export const ToolProgress = memo(function ToolProgress({
   return (
     <div className={cn('ac-tool-progress', className)} data-testid="tool-progress">
       <CollapsibleSection
-        title={`${resolvedIcon} ${displayTitle}`}
+        title={displayTitle}
+        icon={resolvedIcon}
         isLoading={status === 'running' || status === 'streaming'}
         isComplete={status === 'complete'}
         subtitle={statusLabel}
