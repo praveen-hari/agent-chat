@@ -12,6 +12,8 @@ export interface AnimatedDotsProps {
   count?: number;
   /** Accessible label (default: 'Loading') */
   label?: string;
+
+  label2?: string
   /** Additional CSS class */
   className?: string;
 }
